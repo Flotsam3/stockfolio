@@ -1,0 +1,120 @@
+import { AddStockType } from "@/types/types";
+
+const BASE_URL = "http://localhost:3000";
+
+export async function postStockPortfolio(payload:string){
+    try {
+        const response = await fetch(`${BASE_URL}/watchlists`, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(payload)
+        });
+        let data;
+        if (response.ok){
+            data = await response.json();
+        }
+        console.log(data);
+        return data;
+        
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export async function getStockPortfolio(activeWatchList:string){
+    try {
+        const response = await fetch(`${BASE_URL}/watchlists?active=${activeWatchList}`);
+        let data;
+        if (response.ok){
+            data = await response.json();
+        }
+        console.log(data);
+        return data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export async function postNewWatchList(payload:AddStockType, name:string, targetReturn:Number){
+    try {
+        const response = await fetch(`${BASE_URL}/watchlists`, {
+            method: "PUT",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({payload, name, targetReturn})
+        });
+        let data;
+        if (response.ok){
+            data = await response.json();
+        }
+        console.log(data);
+        return data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export async function updateWatchList(payload:AddStockType, name:string){
+    try {
+        const response = await fetch(`${BASE_URL}/watchlists`, {
+            method: "PATCH",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({payload, name})
+        });
+        let data;
+        if (response.ok){
+            data = await response.json();
+        }
+        console.log(data);
+        return data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export async function getAllPortfolios(){
+    try {
+        const response = await fetch(`${BASE_URL}/portfolios`);
+        let data;
+        if (response.ok){
+            data = await response.json();
+        }
+        console.log(data);
+        return data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export async function updateAnualTargetReturn(name:string, targetReturn:number){
+    try {
+        const response = await fetch(`${BASE_URL}/portfolios`, {
+            method: "PATCH",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({name, targetReturn})
+        });
+        let data;
+        if (response.ok){
+            data = await response.json();
+        }
+        console.log(data);
+        return data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export async function deleteOneWatchList(name:string, id:string){
+    try {
+        const response = await fetch(`${BASE_URL}/watchlists?name=${name}&stockId=${id}`, {
+            method: "DELETE"
+        });
+        let data;
+        if (response.ok){
+            data = await response.json();
+        }
+        console.log(data);
+        return data;
+    } catch (error) {
+        console.log();
+    }
+}
