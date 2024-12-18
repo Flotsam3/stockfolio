@@ -15,7 +15,7 @@ import AnalysisInfo from '@/components/AnalysisInfo';
 
 const API_KEY:string = process.env.NEXT_PUBLIC_ALPHA_VANTAGE_KEY || "";
 
-export default function Analysis() {
+export default function Fundamentals() {
     const {stockData} = useStockContext();
     const [select, setSelect] = useState("");
     const [message, setMessage] = useState("Pick a company from the list!");

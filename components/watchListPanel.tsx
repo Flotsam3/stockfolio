@@ -62,7 +62,7 @@ export default function watchListPanel({watchList, stockData, setStockData}:{wat
     const safetyValues = calcSafetyMargin(obj);
     return (
         <div key={obj.isin} className='flex flex-col items-center'>
-            <div className="relative grid grid-cols-[1fr_18%_10%_10%_14%_10%_10%_12%] w-[60vw] bg-white mt-3 p-4 rounded-xl [&>div>input:first-child]:text-sm [&>div>p:first-child]:text-sm [&>div>input:first-child]:font-bold [&>div>p:first-child]:font-bold" >
+            <div className="relative grid lg:grid-cols-custom-lg sm:grid-cols-custom-sm lg:w-[60vw] w-[95vw] sm:justify-center gap-3 lg:gap-0 bg-white mt-3 p-4 rounded-xl [&>div>input:first-child]:text-sm [&>div>p:first-child]:text-sm [&>div>input:first-child]:font-bold [&>div>p:first-child]:font-bold" >
                 {edit === obj.isin ? 
                 <>
                     <div className='[&>input]:w-[90%] [&>input]:bg-slate-200 [&>input]:rounded-md [&>input]:p-1 [&>input]:outline-none'>

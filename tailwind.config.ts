@@ -13,6 +13,10 @@ export default {
         foreground: "var(--foreground)",
         "main-dark": "#33313C"
       },
+      gridTemplateColumns: {
+        'custom-lg': '1fr 18% 10% 10% 14% 10% 10% 12%',
+        'custom-sm': '1fr 25% 25% 25%',
+      }
     },
   },
   plugins: [],
