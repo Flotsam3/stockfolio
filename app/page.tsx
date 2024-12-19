@@ -42,6 +42,8 @@ export default function Home() {
         setStockData(data);
         const portfolios = await getAllPortfolios();
         setIsLoading(false);
+        console.log("fetched portfolios!");
+        
         if (!portfolios) return;
 
         setPortfolioNames(portfolios);

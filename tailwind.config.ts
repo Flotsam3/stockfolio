@@ -15,7 +15,8 @@ export default {
       },
       gridTemplateColumns: {
         'custom-lg': '1fr 18% 10% 10% 14% 10% 10% 12%',
-        'custom-sm': '1fr 25% 25% 25%',
+        'custom-sm': '25% 25% 25% 25%',
+        'custom-md': '1fr auto auto auto auto auto 1fr',
       }
     },
   },
