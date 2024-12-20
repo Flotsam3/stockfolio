@@ -18,7 +18,7 @@ export default function AnalysisInfoItem() {
             {financialMetrics.map(obj=>(
                 <React.Fragment key={obj.id}>
                     <h2 onClick={()=>handleClick(obj.id)} className='my-7 text-xl font-bold  cursor-pointer'>{obj.title}</h2>
-                    <div className={`[&>h2]:font-bold [&>h2]:text-xl [&>h2]:my-5 [&>h3]:my-4 [&>h3]:text-orange-500 [&>div>h4]:font-bold [&>div>h4]:my-3 [&>div>h4]:text-sky-600 ${expand === obj.id ? "block" : "hidden"}`} dangerouslySetInnerHTML={{ __html: obj.content }}></div>
+                    <div className={`[&>h2]:font-bold [&>h2]:text-xl [&>h2]:my-5 [&>h3]:my-4 [&>h3]:text-sky-600 [&>div>h4]:font-bold [&>div>h4]:my-3 [&>div:first-of-type>h4]:text-green-600 [&>div:nth-of-type(2)>h4]:text-yellow-200 [&>div:last-of-type>h4]:text-red-500 ${expand === obj.id ? "block" : "hidden"}`} dangerouslySetInnerHTML={{ __html: obj.content }}></div>
                 </React.Fragment>
             ))}
         </div>
