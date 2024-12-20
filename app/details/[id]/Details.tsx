@@ -12,7 +12,7 @@ export default function Details({ id, name }: { id: string, name: string }) {
     }
 
   return (
-    <div className='flex flex-col items-center min-h-[calc(100vh-86px)] pt-5 pb-8 bg-neutral-300 [&>div>h3]:font-bold'>
+    <div className='flex flex-col items-center min-h-[calc(100vh-86px)] pt-28 pb-8 bg-neutral-300 [&>div>h3]:font-bold'>
         <h1 className='pt-3 text-2xl font-bold text-center'>{name} Technical Analysis</h1>
         <div className='flex flex-col w-[70vw] mt-5 bg-zinc-200 rounded-md'>
             <h3 className='text-center my-1 text-orange-500 text-2xl'>Trend Identification</h3>

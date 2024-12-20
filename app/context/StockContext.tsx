@@ -6,6 +6,8 @@ import { StockData } from "@/types/types.js";
 type ContextProps = {
     stockData: StockData;
     setStockData: Dispatch<SetStateAction<StockData>>;
+    showAddWatchlist: boolean;
+    setShowAddWatchlist: Dispatch<SetStateAction<boolean>>;
 };
 
 export const StockContext = createContext<ContextProps | null>(null);
@@ -27,9 +29,10 @@ export function StockProvider({ children }: { children: React.ReactNode }) {
         ],
         anualTargetReturn: 12,
     });
+    const [showAddWatchlist, setShowAddWatchlist] = useState(false);
 
     return (
-        <StockContext.Provider value={{ stockData, setStockData }}>
+        <StockContext.Provider value={{ stockData, setStockData, showAddWatchlist, setShowAddWatchlist }}>
             {children}
         </StockContext.Provider>
     );

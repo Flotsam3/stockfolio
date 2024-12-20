@@ -47,7 +47,7 @@ export default function AddStock({setStockData, stockData}:{setStockData: Dispat
     }
     
   return (
-    <div className='absolute top-0 right-0 w-64 bg-[#161616] text-white rounded-lg'>
+    <div className='block md:absolute top-0 right-0 w-64 bg-[#161616] text-white rounded-lg'>
         <p className='pl-5 pt-3'>Add To Watchlist</p>
         <form className='flex flex-col items-center gap-3 p-3 [&>label>input]:rounded-sm [&>label>input]:outline-none [&>label>input]:p-1 text-sm [&>label>input]:flex [&>label]:flex-col [&>label>input]:w-full [&>label>input]:bg-[#212224] [&>label]:w-full'>
             <label>Stock

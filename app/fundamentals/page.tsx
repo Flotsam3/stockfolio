@@ -162,7 +162,7 @@ export default function Fundamentals() {
     }
 
   return (
-    <div className='min-h-[calc(100vh-86px)] py-7 px-4 bg-neutral-300'>
+    <div className='min-h-[calc(100vh-86px)] py-24 px-4 bg-neutral-300'>
         <h1 className='mb-4 text-center font-bold text-3xl'>Companies Fundamental Data</h1>
         <div className='flex justify-center mt-2'>
             <select onChange={handleSelectChange} className='py-1 px-2 outline-none' name="companies" id="companies">

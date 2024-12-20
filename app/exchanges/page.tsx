@@ -112,7 +112,7 @@ export default function page() {
     }
             
   return (
-    <div className='flex flex-wrap justify-center gap-4 w-[vw-80%] p-5'>
+    <div className='flex flex-wrap justify-center gap-4 w-[vw-80%] p-28'>
         {data.map((obj, index)=>{
             const times = isMarketOpen(obj.localOpen, obj.localClose, obj.localTimezone, obj.names);
             return <div key={index} className={`flex flex-col gap-1 w-72 p-5 ${times.status === "open" ? "bg-green-100": "bg-red-100"} text-gray-800 rounded-xl shadow-md`}>

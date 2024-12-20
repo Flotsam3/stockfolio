@@ -12,7 +12,7 @@ import { getAllPortfolios } from "@/api/dashboard";
 import { useStockContext } from "./context/StockContext";
 
 export default function Home() {
-  const {stockData, setStockData} = useStockContext();
+  const {stockData, setStockData, showAddWatchlist, setShowAddWatchlist} = useStockContext();
 
   const [economics, setEconomics] = useState<EconomicsType>({
     inflation: [{value:0}],
@@ -57,11 +57,17 @@ export default function Home() {
   return (
     <>
       <div className="relative flex-1 bg-cover bg-center h-[calc(100vh-85px)] bg-[url('/images/feature-bg.png')]" >
-        <section className="absolute top-10 left-5 right-5">
+        <section className="absolute top-28 left-5 right-5">
           <Economics economics={economics} setEconomics={setEconomics} targetReturn={targetReturn} activeStock={stockData.name} setStockData={setStockData}/>
-          <AddStock setStockData={setStockData} stockData={stockData}/>
-          <AddWatchList portfolioNames={portfolioNames} setPortfolioNames={setPortfolioNames} stockDataName={stockData.name} setStockData={setStockData}/>
+          <div className="hidden md:block">
+            <AddStock setStockData={setStockData} stockData={stockData}/>
+          </div>
+            <AddWatchList portfolioNames={portfolioNames} setPortfolioNames={setPortfolioNames} stockDataName={stockData.name} setStockData={setStockData}/>
         </section>
+        {showAddWatchlist && <div className="absolute top-0 left-0 right-0 flex justify-center items-center md:hidden h-[90vh] bg-white">
+            <span onClick={()=>setShowAddWatchlist(false)} className="absolute top-28 right-5 text-2xl cursor-pointer">x</span>
+            <AddStock setStockData={setStockData} stockData={stockData}/>
+        </div>}
       </div>
       <div className=" flex flex-col items-center bg-main-dark pb-7">
           {isLoading ? (
