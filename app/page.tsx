@@ -71,7 +71,7 @@ export default function Home() {
       </div>
       <div className=" flex flex-col items-center bg-main-dark pb-7">
           {isLoading ? (
-            <h2 className="text-2xl">Loading data...</h2>
+            <h2 className="mt-4 text-2xl text-white">Loading data...</h2>
           ) : <>
             <h2 className="text-center text-white text-3xl pt-8">{stockData.name}</h2>
             {stockData.watchList[0]?.name !== "" ? <WatchListPanel watchList={stockData.watchList} stockData={stockData} setStockData={setStockData}/> : <h2 className="text-xl text-white">Add your first stock to the watchlist!</h2>}
