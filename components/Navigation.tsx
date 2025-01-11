@@ -2,12 +2,10 @@
 
 import React, {useState} from 'react';
 import Link from "next/link";
-import {usePathname} from "next/navigation";
 import { useStockContext } from '@/app/context/StockContext';
 
 
 export default function Navigation() {
-  const pathname = usePathname();
   const [showMenu, setShowMenu] = useState(false);
   const {setShowAddWatchlist} = useStockContext();
   

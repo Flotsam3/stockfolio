@@ -7,10 +7,8 @@ import { updateWatchList } from '@/api/dashboard';
 import { getStockPortfolio } from '@/api/dashboard';
 import { deleteOneWatchList } from '@/api/dashboard';
 import Link from "next/link";
-import {usePathname} from "next/navigation";
 
 export default function watchListPanel({watchList, stockData, setStockData}:{watchList:AddStockType[], stockData:StockData, setStockData:Dispatch<SetStateAction<StockData>>}) {
-    const pathname = usePathname();
     const [edit, setEdit] = useState<boolean | string>(false);
     const [input, setInput] = useState<AddStockType>( {
         name:"",
