@@ -14,6 +14,7 @@ import { Profitability, EfficiencyAndLeverage, Liquidity, Valuation } from '@/ty
 import AnalysisInfo from '@/components/AnalysisInfo';
 
 const API_KEY:string = process.env.NEXT_PUBLIC_ALPHA_VANTAGE_KEY || "";
+const BASE_URL:string = process.env.NEXT_PUBLIC_BASE_URL || "";
 
 export default function Fundamentals() {
     const {stockData} = useStockContext();
@@ -96,7 +97,7 @@ export default function Fundamentals() {
 
     async function handleData(){
         try {
-            console.log({API_KEY});
+            console.log({API_KEY, BASE_URL});
             if (!select) return notify();
 
             setIsLoading(true);
