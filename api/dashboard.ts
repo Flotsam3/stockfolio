@@ -1,8 +1,7 @@
 import { AddStockType } from "@/types/types";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
-console.log({BASE_URL});
-
+console.log("BASE_URL in production:", process.env.NEXT_PUBLIC_BASE_URL);
 
 export async function postStockPortfolio(payload:string){
     try {
