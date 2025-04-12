@@ -1,36 +1,99 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 📈 Stockfolio
 
-## Getting Started
+**Stockfolio** is a lightweight, responsive web tool designed to support smarter investment decisions. It allows users to create customized stock watchlists, analyze trends, and gain actionable insights using technical and fundamental financial metrics.
 
-First, run the development server:
+Built with modern web technologies, Stockfolio delivers a seamless and fast user experience for retail investors, traders, and financial enthusiasts.
+
+---
+
+## 🚀 Features
+
+- 🔍 **Custom Watchlists** – Track selected stocks in a personalized view  
+- 📊 **Technical Analysis** – Trend, momentum, and volatility breakdowns  
+- 🧮 **Fundamental Data** – Access to earnings, profit, and other key financial indicators  
+- 🌍 **Global Market Overview** – Snapshot of major stock exchanges  
+- ⚡️ **Responsive UI** – Fast-loading, mobile-friendly interface
+
+---
+
+## 🛠 Tech Stack
+
+- **React** – Frontend UI components  
+- **Next.js** – Server-side rendering and routing  
+- **TypeScript** – Type safety across the codebase  
+- **Tailwind CSS** – Utility-first styling  
+- **MongoDB** – NoSQL database for storing user data & financial metrics  
+- **Vite** – Lightning-fast dev environment setup (with Next.js)
+
+---
+
+## 🧑‍💻 Getting Started
+
+To run the project locally, follow these steps:
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/your-username/stockfolio.git
+cd stockfolio
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+# or
+yarn install
+```
+
+### 3. Start the development server
 
 ```bash
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser to view the app.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🗂 Project Structure
 
-## Learn More
+```
+/
+├── app/               # Application pages and routing
+├── components/        # Reusable UI components
+├── lib/               # Utility functions and helpers
+├── styles/            # Tailwind and custom styles
+├── public/            # Static files
+└── ...                # Additional config and setup
+```
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📦 Deployment
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The recommended way to deploy Stockfolio is via [Vercel](https://vercel.com), the creators of Next.js.
 
-## Deploy on Vercel
+1. Push your code to GitHub
+2. Connect your repository to Vercel
+3. Set environment variables if needed
+4. Deploy 🚀
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+More info: [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 📚 Learn More
+
+- [Next.js Documentation](https://nextjs.org/docs)
+- [React Docs](https://react.dev/)
+- [Tailwind CSS Docs](https://tailwindcss.com/docs)
+- [MongoDB Docs](https://www.mongodb.com/docs/)
+
+---
+
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE).
