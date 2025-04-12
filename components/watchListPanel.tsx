@@ -56,10 +56,10 @@ export default function WatchListPanel({watchList, stockData, setStockData}:{wat
 
   return (
   <>
-  {watchList.map((obj) => {
+  {watchList.map((obj, index) => {
     const safetyValues = calcSafetyMargin(obj);
     return (
-        <div key={obj.isin} className='flex flex-col items-center'>
+        <div key={index} className='flex flex-col items-center'>
             <div className="relative grid grid-cols-1 sm:grid-cols-custom-sm lg:grid-cols-custom-lg md:grid-cols-custom-tablet lg:w-[60vw] w-[95vw] sm:justify-center gap-3 lg:gap-0 bg-white mt-3 p-4 rounded-xl [&>div>input:first-child]:text-sm [&>div>p:first-child]:text-sm [&>div>input:first-child]:font-bold [&>div>p:first-child]:font-bold" >
                 {edit === obj.isin ? 
                 <>
