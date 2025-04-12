@@ -23,7 +23,31 @@ Built with modern web technologies, Stockfolio delivers a seamless and fast user
 - **TypeScript** – Type safety across the codebase  
 - **Tailwind CSS** – Utility-first styling  
 - **MongoDB** – NoSQL database for storing user data & financial metrics  
-- **Vite** – Lightning-fast dev environment setup (with Next.js)
+- **Vite** – Lightning-fast dev environment setup (with Next.js)  
+- **Alpha Vantage API** – Real-time and historical financial data
+
+---
+
+## 🔑 Environment Variables
+
+Before running the app, you’ll need to set up a `.env.local` file in the root directory with the following variables:
+
+```env
+MONGO_URL=your_mongodb_connection_string
+DATABASE=your_database_name
+NEXT_PUBLIC_ALPHA_VANTAGE_KEY=your_alpha_vantage_api_key
+NEXT_PUBLIC_BASE_URL=http://localhost:3000
+```
+
+### 📘 Alpha Vantage API
+
+Stockfolio uses the [Alpha Vantage API](https://www.alphavantage.co/) throughout the app to fetch real-time stock data, historical prices, technical indicators, and more.
+
+To use this app, you’ll need to:
+
+1. Create a free account at [Alpha Vantage](https://www.alphavantage.co/support/#api-key)
+2. Generate your API key
+3. Paste it into your `.env.local` file as `NEXT_PUBLIC_ALPHA_VANTAGE_KEY`
 
 ---
 
@@ -46,7 +70,11 @@ npm install
 yarn install
 ```
 
-### 3. Start the development server
+### 3. Set up environment variables
+
+Create a `.env.local` file and add your configuration as shown above.
+
+### 4. Start the development server
 
 ```bash
 npm run dev
@@ -65,7 +93,6 @@ Open [http://localhost:3000](http://localhost:3000) in your browser to view the 
 ├── app/               # Application pages and routing
 ├── components/        # Reusable UI components
 ├── lib/               # Utility functions and helpers
-├── styles/            # Tailwind and custom styles
 ├── public/            # Static files
 └── ...                # Additional config and setup
 ```
@@ -78,7 +105,7 @@ The recommended way to deploy Stockfolio is via [Vercel](https://vercel.com), th
 
 1. Push your code to GitHub
 2. Connect your repository to Vercel
-3. Set environment variables if needed
+3. Add your environment variables in the Vercel dashboard
 4. Deploy 🚀
 
 More info: [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying)
@@ -91,6 +118,7 @@ More info: [Next.js deployment documentation](https://nextjs.org/docs/app/buildi
 - [React Docs](https://react.dev/)
 - [Tailwind CSS Docs](https://tailwindcss.com/docs)
 - [MongoDB Docs](https://www.mongodb.com/docs/)
+- [Alpha Vantage Docs](https://www.alphavantage.co/documentation/)
 
 ---
 
