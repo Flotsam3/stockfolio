@@ -168,8 +168,8 @@ export default function Fundamentals() {
         <div className='flex justify-center mt-2'>
             <select onChange={handleSelectChange} className='py-1 px-2 outline-none' name="companies" id="companies">
                 <option value="">Choose a company</option>
-                {stockData.watchList.map(obj=>(
-                    <option key={obj.ticker} value={obj.ticker}>{obj.name}</option>
+                {stockData.watchList.map((obj, index)=>(
+                    <option key={index} value={obj.ticker}>{obj.name}</option>
                 ))}
             </select>
         </div>
