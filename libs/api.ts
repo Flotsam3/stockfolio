@@ -5,9 +5,14 @@ export async function getInflation(){
     try {
         const response = await fetch(`https://www.alphavantage.co/query?function=INFLATION&apikey=${API_KEY}`);
         const data = await response.json();
+        console.log("getInflation data", data);
+
+        if (data?.Information?.includes("API rate limit")) throw new Error("API limit reached!")
+        
         return data;
     } catch (error) {
         console.log(error);
+        throw new Error(String(error));
     }
 }
 

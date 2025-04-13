@@ -27,6 +27,8 @@ export async function postEconomics(economicsData: EconomicsType){
 }
 
 export async function updateEconomics(updateData: EconomicsType, id:string){
+    console.log("in updateEconomice before fetch", updateData);
+    
     try {
         if (!updateData) return; 
         const response = await fetch(`${BASE_URL}/economics/${id}`, {
@@ -35,6 +37,8 @@ export async function updateEconomics(updateData: EconomicsType, id:string){
             body: JSON.stringify(updateData)
         });
         const data = await response.json();
+        console.log("data from updateEconomics", data);
+        
         return data;
     } catch (error) {
         console.log(error);

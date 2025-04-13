@@ -20,6 +20,8 @@ export async function GET(request:Request, {params}:{params: {id: string}}) {
   }
 
   export async function PUT(request:Request, {params}:{params: {id: string}}) {
+    console.log("In PUT route");
+    
     try {
         const {id} = await params;
         console.log({id});
@@ -45,7 +47,7 @@ export async function GET(request:Request, {params}:{params: {id: string}}) {
             }
         });
 
-        console.log({updateFields});
+        console.log("req body", JSON.stringify(body, null, 2), "updateFields", JSON.stringify(updateFields, null, 2));
         
 
         let updatedEconomics;
