@@ -20,17 +20,15 @@ export async function GET(request:Request, {params}:{params: {id: string}}) {
   }
 
   export async function PUT(request:Request, {params}:{params: {id: string}}) {
-    console.log("In PUT route");
     
     try {
         const {id} = await params;
-        console.log({id});
 
         const body: EconomicsType = await request.json();
         type EconomicField = 'inflation' | 'cpi' | 'unemployment' | 'interest';
         
         type UpdateFields = Partial<{
-            [K in `economics.${EconomicField}`]: EconomicEntry[];
+            [K in EconomicField]: EconomicEntry[];
         }>;
 
         const updateFields: UpdateFields = {};
@@ -40,20 +38,18 @@ export async function GET(request:Request, {params}:{params: {id: string}}) {
         
         fields.forEach(field => {
             if (body[field]) {
-                updateFields[`economics.${field}`] = body[field].map(entry => ({
+                updateFields[field] = body[field].map(entry => ({
                     value: entry.value,
                     date: entry.date
                 }));
             }
         });
 
-        console.log("req body", JSON.stringify(body, null, 2), "updateFields", JSON.stringify(updateFields, null, 2));
-        
-
         let updatedEconomics;
-        // Only perform update if there are fields to update
         
+        // Only perform update if there are fields to update
         if (Object.keys(updateFields).length > 0) {
+            
             updatedEconomics = await EconomicsModel.findByIdAndUpdate(
                 id,
                 { $set: updateFields },
@@ -62,7 +58,6 @@ export async function GET(request:Request, {params}:{params: {id: string}}) {
             return Response.json(updatedEconomics);
         }
 
-        // const currentPortfolio = await StockPortfolio.findById(portfolioId);
         return Response.json("successfully updated", {status: 200});
         
     } catch (error) {

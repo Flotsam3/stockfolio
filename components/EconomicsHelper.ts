@@ -37,12 +37,11 @@ export async function prepareEconomics(setEconomics: Dispatch<SetStateAction<Eco
             console.log("Time to update");
 
             const updateData = await processUpdateData();
-            // TODO - save fetched data in local storage and test api call to /economics/id (updateEconomics line 44)
 
-            if (!updateData) throw new Error("No updated economics data")
+            if (!updateData) throw new Error("No updated economics data");
 
             const updatedData = await updateEconomics(updateData, response[0]._id);
-            console.log({ updateData });
+            console.log({ updatedData });
             setEconomics(updatedData);
          } else {
             console.log("Not yet one month since last update");
@@ -52,7 +51,7 @@ export async function prepareEconomics(setEconomics: Dispatch<SetStateAction<Eco
       }
    } catch (error) {
       console.log(error);
-      return error
+      return error;
    }
 }
 
