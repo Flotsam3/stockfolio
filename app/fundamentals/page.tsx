@@ -113,7 +113,6 @@ export default function Fundamentals() {
             const data2 = processEfficiencyAndLeverage(income, balance);
             const data3 = processLiquidity(balance, cashFlow);
             const data4 = processValuation(balance, cashFlow, monthlyStock);
-            setIsLoading(false);
             
             if (!company){
                 console.log("Creating company!");
@@ -156,6 +155,8 @@ export default function Fundamentals() {
     
                 setValuation({epsAnnual:updatedData.valuation.epsAnnual, epsQuarterly:updatedData.valuation.epsQuarterly, peRatioAnnual:updatedData.valuation.peRatioAnnual, peRatioQuarterly:updatedData.valuation.peRatioQuarterly});
             }
+
+            setIsLoading(false);
 
         } catch (error) {
             console.log(error);
