@@ -32,7 +32,8 @@ export default function Home() {
             if (!activeWatchList) return console.log("No watchlist yet!");
 
             setIsLoading(true);
-            const data = await getStockPortfolio(activeWatchList);
+             // TODO check funcionality
+            const data = await getStockPortfolio();
             if (!data) {
                setIsLoading(false);
                return console.log("No portfolio yet!");

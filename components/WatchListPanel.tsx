@@ -27,7 +27,8 @@ export default function WatchListPanel({watchList, stockData, setStockData}:{wat
             setEdit(false)
             const activeWatchList = localStorage.getItem("watchList");
             if (!activeWatchList) return;
-            const updateData = await getStockPortfolio(activeWatchList);
+             // TODO check funcionality
+            const updateData = await getStockPortfolio();
             setStockData(updateData);
         } else {
             setEdit(obj.isin);
@@ -50,7 +51,8 @@ export default function WatchListPanel({watchList, stockData, setStockData}:{wat
     async function handleDelete(id: string | undefined){
         if (!id) return;
         const response = await deleteOneWatchList(stockData.name, id);
-        const updateData = await getStockPortfolio(stockData.name);
+        // TODO check funcionality
+        const updateData = await getStockPortfolio();
         setStockData(updateData);
     }
 

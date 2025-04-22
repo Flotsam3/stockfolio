@@ -15,16 +15,16 @@ export async function POST(request: Request){
     }
 }
 
-export async function GET(request: Request){
+export async function GET(){
     try {
         await connectDB();
-        const { searchParams } = new URL(request.url);
-        const active = searchParams.get('active');
+        // const { searchParams } = new URL(request.url);
+        // const active = searchParams.get('active');
         
-        if (!active) {
-            return Response.json({ msg: "Active parameter is required" }, { status: 400 });
-        }
-        const response = await StockPortfolio.findOne({ name: active });
+        // if (!active) {
+        //     return Response.json({ msg: "Active parameter is required" }, { status: 400 });
+        // }
+        const response = await StockPortfolio.findOne({ active:true });
         return Response.json(response, { status: 200 });
 
     } catch (error) {

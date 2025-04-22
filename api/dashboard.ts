@@ -22,9 +22,9 @@ export async function postStockPortfolio(payload:string){
     }
 }
 
-export async function getStockPortfolio(activeWatchList:string){
+export async function getStockPortfolio(){
     try {
-        const response = await fetch(`${BASE_URL}/watchlists?active=${activeWatchList}`);
+        const response = await fetch(`${BASE_URL}/watchlists`);
         let data;
         if (response.ok){
             data = await response.json();
