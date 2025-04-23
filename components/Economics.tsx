@@ -72,64 +72,64 @@ export default function Economics({
                   economics?.inflation[0]?.date?.toString()?.slice(2, 4) ?? ""
                }/${economics?.inflation[1]?.date?.toString()?.slice(2, 4) ?? ""}`}</p>
                <p className="text-center bg-gray-950 rounded-b-2xl pb-4">
-                  {typeof economics.inflation[0].value === "number" &&
-                     economics.inflation[0]?.value?.toFixed(1)}{" "}
+                  {typeof economics?.inflation[0].value === "number" &&
+                     economics?.inflation[0]?.value?.toFixed(1)}{" "}
                   (
-                  {typeof economics.inflation[1]?.value === "number" &&
-                     economics.inflation[1]?.value?.toFixed(1)}
+                  {typeof economics?.inflation[1]?.value === "number" &&
+                     economics?.inflation[1]?.value?.toFixed(1)}
                   )
                </p>
             </div>
             <div
                className="text-sm"
                title={
-                  economics.cpi[0].date &&
-                  economics.cpi[1].date &&
-                  prepareTitle(economics.cpi[0].date, economics.cpi[1].date)
+                  economics?.cpi[0].date &&
+                  economics?.cpi[1].date &&
+                  prepareTitle(economics?.cpi[0].date, economics?.cpi[1].date)
                }
             >
                <p className="bg-yellow-400 rounded-t-2xl -mt-3 pl-3">Consumer Price Index</p>
                <p className="text-center bg-yellow-400 rounded-b-2xl pb-4">
-                  {typeof economics.cpi[0].value === "number" && economics.cpi[0].value?.toFixed(2)}{" "}
+                  {typeof economics?.cpi[0].value === "number" && economics?.cpi[0].value?.toFixed(2)}{" "}
                   (
-                  {typeof economics.cpi[1]?.value === "number" &&
-                     economics.cpi[1]?.value?.toFixed(2)}
+                  {typeof economics?.cpi[1]?.value === "number" &&
+                     economics?.cpi[1]?.value?.toFixed(2)}
                   )
                </p>
             </div>
             <div
                className="text-sm"
                title={
-                  economics.unemployment[0].date &&
-                  economics.unemployment[1].date &&
-                  prepareTitle(economics.unemployment[0].date, economics.unemployment[1].date)
+                  economics?.unemployment[0].date &&
+                  economics?.unemployment[1].date &&
+                  prepareTitle(economics?.unemployment[0].date, economics?.unemployment[1].date)
                }
             >
                <p className="bg-gray-100 rounded-t-2xl -mt-3 pl-3">Unemployment Rate</p>
                <p className="text-center bg-gray-100 rounded-b-2xl pb-4">
-                  {typeof economics.unemployment[0]?.value === "number" &&
-                     economics.unemployment[0]?.value?.toFixed(1)}{" "}
+                  {typeof economics?.unemployment[0]?.value === "number" &&
+                     economics?.unemployment[0]?.value?.toFixed(1)}{" "}
                   (
-                  {typeof economics.unemployment[1]?.value === "number" &&
-                     economics.unemployment[1]?.value?.toFixed(1)}
+                  {typeof economics?.unemployment[1]?.value === "number" &&
+                     economics?.unemployment[1]?.value?.toFixed(1)}
                   )
                </p>
             </div>
             <div
                className="text-white text-sm"
                title={
-                  economics.interest[0].date &&
-                  economics.interest[1].date &&
-                  prepareTitle(economics.interest[0].date, economics.interest[1].date)
+                  economics?.interest[0].date &&
+                  economics?.interest[1].date &&
+                  prepareTitle(economics?.interest[0].date, economics?.interest[1].date)
                }
             >
                <p className="bg-gray-700 rounded-t-2xl -mt-3 pl-3">Interest Rate</p>
                <p className="text-center bg-gray-700 rounded-b-2xl pb-2">
-                  {typeof economics.interest[0]?.value === "number" &&
-                     economics.interest[0]?.value?.toFixed(1)}{" "}
+                  {typeof economics?.interest[0]?.value === "number" &&
+                     economics?.interest[0]?.value?.toFixed(1)}{" "}
                   (
-                  {typeof economics.interest[1]?.value === "number" &&
-                     economics.interest[1].value?.toFixed(1)}
+                  {typeof economics?.interest[1]?.value === "number" &&
+                     economics?.interest[1].value?.toFixed(1)}
                   )
                </p>
             </div>
