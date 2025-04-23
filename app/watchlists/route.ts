@@ -6,8 +6,13 @@ export async function POST(request: Request){
         await connectDB();
         const body = await request.json();
         console.log({body});
-        const response = await StockPortfolio.create({name:body});
-        return Response.json(response, {status: 201});
+        // Deactivate all portfolios
+        const response1 = await StockPortfolio.updateMany({ active: true }, { $set: { active: false } });
+        console.log({response1});
+        
+        // Create new portfolio and set it active
+        const response2 = await StockPortfolio.create({name:body, active: true});
+        return Response.json(response2, {status: 201});
 
     } catch (error) {
         console.log(error);
@@ -18,12 +23,7 @@ export async function POST(request: Request){
 export async function GET(){
     try {
         await connectDB();
-        // const { searchParams } = new URL(request.url);
-        // const active = searchParams.get('active');
         
-        // if (!active) {
-        //     return Response.json({ msg: "Active parameter is required" }, { status: 400 });
-        // }
         const response = await StockPortfolio.findOne({ active:true });
         return Response.json(response, { status: 200 });
 
@@ -57,7 +57,6 @@ export async function PATCH(request: Request){
        
         console.log("payload", body.payload);
 
-        // First find the document
         const stock = await StockPortfolio.findOne({ name: body.name });
     
         // Find the index of the item to update

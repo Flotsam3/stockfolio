@@ -45,7 +45,7 @@ export default function Economics({
 
    async function handleInput() {
       await updateAnualTargetReturn(activeStock, input);
-      const data = await getStockPortfolio(activeStock);
+      const data = await getStockPortfolio();
       setStockData(data);
    }
 

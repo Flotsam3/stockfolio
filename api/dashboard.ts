@@ -54,6 +54,22 @@ export async function postNewWatchList(payload:AddStockType, name:string, target
     }
 }
 
+export async function switchWatchList(id:string){
+    try {
+        const response = await fetch(`${BASE_URL}/watchlists/switch?id=${id}`, {
+            method: "PATCH"
+        });
+        let data;
+        if (response.ok){
+            data = await response.json();
+        }
+        console.log(data);
+        return data;
+    } catch (error) {
+        console.log();
+    }
+}
+
 export async function updateWatchList(payload:AddStockType, name:string){
     try {
         const response = await fetch(`${BASE_URL}/watchlists`, {

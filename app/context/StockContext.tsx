@@ -28,6 +28,7 @@ export function StockProvider({ children }: { children: React.ReactNode }) {
             },
         ],
         anualTargetReturn: 12,
+        active: false
     });
     const [showAddWatchlist, setShowAddWatchlist] = useState(false);
 

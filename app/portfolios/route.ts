@@ -2,7 +2,7 @@ import StockPortfolio from "@/models/StockPortfolio";
 
 export async function GET(){
     try {
-        const response = await StockPortfolio.find().select('name');
+        const response = await StockPortfolio.find().select('name active');
         return Response.json(response, { status: 200 });
     } catch (error) {
         console.log(error);

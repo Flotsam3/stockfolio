@@ -3,41 +3,47 @@
 import React, { useState, Dispatch, SetStateAction } from 'react';
 import { postStockPortfolio } from '@/api/dashboard';
 import { StockData } from '@/types/types';
-import { getStockPortfolio } from '@/api/dashboard';
+import { getAllPortfolios, switchWatchList } from '@/api/dashboard';
 import toast, {Toaster} from "react-hot-toast";
 
-export default function AddWatchList({portfolioNames, setPortfolioNames, stockDataName, setStockData}:{portfolioNames:{name:string}[], setPortfolioNames:Dispatch<SetStateAction<{
-    name: string;}[]>>, stockDataName:string, setStockData:Dispatch<SetStateAction<StockData>>}) {
+export default function AddWatchList({portfolioNames, setPortfolioNames,  setStockData}:{portfolioNames:StockData[], setPortfolioNames:Dispatch<SetStateAction<StockData[]>>, setStockData:Dispatch<SetStateAction<StockData>>}) {
     const [input, setInput] = useState("");
 
-    const notify = () => toast.success("Added a new watchlist!")
+    const notify = () => toast.success("Added a new watchlist!");
+
+    console.log({portfolioNames});
+    
 
     async function handleCreate(){
         try {
             const response = await postStockPortfolio(input);
-            localStorage.setItem("watchList", input);
             notify();
-            console.log({response});
             setStockData(response);
-            setPortfolioNames([{name:input}])
+
+            const updatedData = await getAllPortfolios();
+            setPortfolioNames(updatedData);
+            setInput("");
         } catch (error) {
             console.log(error); 
         }
     }
 
-    async function handleSwitchWatchList(name:string){
-        const data = await getStockPortfolio(name);
-        if (!data) return;
-        localStorage.setItem("watchList", name);
-        setStockData(data);
+    async function handleSwitchWatchList(id:string | undefined){
+        if (!id) return;
+
+        const updatedWatchlist = await switchWatchList(id);
+        const response = await getAllPortfolios();
+        
+        setStockData(updatedWatchlist);
+        setPortfolioNames(response);
     }
 
   return (
     <div className='w-52 bg-[#161616] text-white mt-8 p-5'>
         <div className='flex gap-2'>
             {portfolioNames.map((obj) => (
-                <div key={obj.name} className='flex justify-start mb-2'>
-                    <span onClick={()=>handleSwitchWatchList(obj.name)} className={`inline-block w-4 h-4 rounded-full cursor-pointer ${obj.name === stockDataName ? "bg-yellow-400" : "bg-gray-700"}`}></span>
+                <div key={obj._id} className='flex justify-start mb-2' title={obj.name}>
+                    <span onClick={()=>handleSwitchWatchList(obj._id)} className={`inline-block w-4 h-4 rounded-full cursor-pointer ${obj.active === true ? "bg-yellow-400" : "bg-gray-700"}`}></span>
                 </div>
             ))}
         </div>
