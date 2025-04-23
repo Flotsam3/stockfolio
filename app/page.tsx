@@ -53,7 +53,7 @@ export default function Home() {
       getData();
    }, []);
 
-   console.log({portfolioNames});
+   console.log({portfolioNames, stockData});
 
    return (
       <>
@@ -100,7 +100,7 @@ export default function Home() {
                         setStockData={setStockData}
                      />
                   ) : (
-                     <h2 className="text-xl text-white">Add your first stock to the watchlist!</h2>
+                     <h2 className="text-xl text-white">{stockData.active ? "Add your first stock to the watchlist!" : "Add your first Watchlist!"}</h2>
                   )}
                </>
             )}
