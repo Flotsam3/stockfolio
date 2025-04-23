@@ -6,9 +6,9 @@ export function processProfitability(income:incomeData){
 
     const annualResult = annual.map(obj=>{
         const year = obj.fiscalDateEnding.slice(2, 4);
-        const grossProfit = (+obj.totalRevenue - +obj.costOfRevenue)/1_000_000;
-        const operatingIncome = (+obj.grossProfit - +obj.operatingExpenses)/1_000_000;
-        const netIncome = +obj.netIncome/1_000_000;
+        const grossProfit = Number(((+obj.totalRevenue - +obj.costOfRevenue)/1_000_000).toFixed(0));
+        const operatingIncome = Number(((+obj.grossProfit - +obj.operatingExpenses)/1_000_000).toFixed(0));
+        const netIncome = Number((+obj.netIncome/1_000_000).toFixed(0));
 
         return {year, grossProfit, operatingIncome, netIncome};
     });
@@ -16,9 +16,9 @@ export function processProfitability(income:incomeData){
     const quarterlyResult = quarterly.map(obj=>{
         const month = obj.fiscalDateEnding.slice(5, 7);
         const year = obj.fiscalDateEnding.slice(2, 4);
-        const grossProfit = (+obj.totalRevenue - +obj.costOfRevenue)/1_000_000;
-        const operatingIncome = (+obj.grossProfit - +obj.operatingExpenses)/1_000_000;
-        const netIncome = +obj.netIncome/1_000_000;
+        const grossProfit = Number(((+obj.totalRevenue - +obj.costOfRevenue)/1_000_000).toFixed(0));
+        const operatingIncome = Number(((+obj.grossProfit - +obj.operatingExpenses)/1_000_000).toFixed(0));
+        const netIncome = Number((+obj.netIncome/1_000_000).toFixed(0));
 
         return {month, year, grossProfit, operatingIncome, netIncome};
     });

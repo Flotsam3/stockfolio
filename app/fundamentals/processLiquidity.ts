@@ -10,14 +10,14 @@ export function processLiquidity(balance:incomeData, cashFlow:incomeData){
         const year = obj.fiscalDateEnding.slice(2, 4);
         const currentRatio = +obj.totalCurrentAssets / +obj.totalCurrentLiabilities;
         
-        return {year, value:currentRatio.toFixed(2)};
+        return {year, value:currentRatio.toFixed(1)};
     });
 
     const annualResult2 = annualCashFlow.map((obj)=>{
         const year = obj.fiscalDateEnding.slice(2, 4);
         const operatingCashFlow = +obj.operatingCashflow/1_000_000;
 
-        return {year, value:operatingCashFlow};
+        return {year, value:Number(operatingCashFlow).toFixed(0)};
     });
 
     const quarterlyResult1 = quarterlyBalance.map((obj)=>{
@@ -25,7 +25,7 @@ export function processLiquidity(balance:incomeData, cashFlow:incomeData){
         const year = obj.fiscalDateEnding.slice(2, 4);
         const currentRatio = +obj.totalCurrentAssets / +obj.totalCurrentLiabilities;
 
-        return {month, year, value:currentRatio.toFixed(2)};
+        return {month, year, value:currentRatio.toFixed(1)};
     });
 
     const quarterlyResult2 = quarterlyCashFlow.map((obj)=>{
@@ -33,7 +33,7 @@ export function processLiquidity(balance:incomeData, cashFlow:incomeData){
         const year = obj.fiscalDateEnding.slice(2, 4);
         const operatingCashFlow = +obj.operatingCashflow/1_000_000;
 
-        return {month, year, value:operatingCashFlow};
+        return {month, year, value:Number((operatingCashFlow).toFixed(0))};
     });
 
     return {annualResult1, annualResult2, quarterlyResult1, quarterlyResult2};

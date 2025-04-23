@@ -24,7 +24,7 @@ export function processValuation(balance:incomeData, cashFlow:incomeData, monthl
 
         let eps: number | string = "n/a";
         if (yearBalance === yearCashFlow){
-            eps = (+netIncome / +sharesOutstanding).toFixed(2);
+            eps = (+netIncome / +sharesOutstanding).toFixed(1);
         }
         epsArrayAnnual.push({eps, year: yearBalance});
         return {value:eps, year: yearBalance};
@@ -40,7 +40,7 @@ export function processValuation(balance:incomeData, cashFlow:incomeData, monthl
 
         let eps: number | string = "n/a";
         if (yearBalance === yearCashFlow && monthBalance === monthCashFlow){
-            eps = (+netIncome / +sharesOutstanding).toFixed(2);
+            eps = (+netIncome / +sharesOutstanding).toFixed(1);
         }
         epsArrayMonthly.push({eps, month:monthBalance, year:yearBalance});
         return {value:eps, month:monthBalance, year:yearBalance};
@@ -54,7 +54,7 @@ export function processValuation(balance:incomeData, cashFlow:incomeData, monthl
             return obj.date.slice(2, 4) === yearBalance && obj.date.slice(5, 7) === monthBalance;
         });
         if (matchingStock?.date.slice(2, 4) === epsArrayAnnual[index].year){
-            return {value:(matchingStock.close/+epsArrayAnnual[index].eps).toFixed(2), year:epsArrayAnnual[index].year}
+            return {value:(matchingStock.close/+epsArrayAnnual[index].eps).toFixed(1), year:epsArrayAnnual[index].year}
         }
         return {value:"n/a", year:epsArrayAnnual[index].year}
     })
@@ -67,7 +67,7 @@ export function processValuation(balance:incomeData, cashFlow:incomeData, monthl
             return obj.date.slice(2, 4) === yearBalance && obj.date.slice(5, 7) === monthBalance;
         });
         if (matchingStock?.date.slice(2, 4) === epsArrayMonthly[index].year && matchingStock?.date.slice(5, 7) === epsArrayMonthly[index].month){
-            return {value:(matchingStock.close/+epsArrayMonthly[index].eps).toFixed(2), year:epsArrayMonthly[index].year, month:epsArrayMonthly[index].month}
+            return {value:(matchingStock.close/+epsArrayMonthly[index].eps).toFixed(1), year:epsArrayMonthly[index].year, month:epsArrayMonthly[index].month}
         }
         return {value:"n/a", year:epsArrayMonthly[index].year, month:epsArrayMonthly[index].month}
     })
