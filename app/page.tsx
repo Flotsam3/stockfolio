@@ -5,6 +5,7 @@ import Economics from "../components/Economics";
 import AddStock from "../components/AddStock";
 import WatchListPanel from "../components/WatchListPanel";
 import AddWatchList from "@/components/AddWatchList";
+import { StockData } from "@/types/types";
 import { useEffect, useState } from "react";
 import { EconomicsType } from "@/types/types";
 import { getStockPortfolio } from "@/api/dashboard";
@@ -21,25 +22,23 @@ export default function Home() {
       interest: [{ value: 0 }],
    });
 
-   const [portfolioNames, setPortfolioNames] = useState<{ name: string }[]>([]);
+   const [portfolioNames, setPortfolioNames] = useState<StockData[]>([]);
    const [targetReturn, setTargetReturn] = useState(12);
    const [isLoading, setIsLoading] = useState(false);
 
    useEffect(() => {
       async function getData() {
          try {
-            const activeWatchList = localStorage.getItem("watchList");
-            if (!activeWatchList) return console.log("No watchlist yet!");
-
             setIsLoading(true);
-            const data = await getStockPortfolio(activeWatchList);
+
+            const data = await getStockPortfolio();
             if (!data) {
                setIsLoading(false);
                return console.log("No portfolio yet!");
             }
 
-            console.log({ data });
             setStockData(data);
+
             const portfolios = await getAllPortfolios();
             setIsLoading(false);
             console.log("fetched portfolios!");
@@ -53,6 +52,8 @@ export default function Home() {
       }
       getData();
    }, []);
+
+   console.log({portfolioNames, stockData});
 
    return (
       <>
@@ -71,7 +72,6 @@ export default function Home() {
                <AddWatchList
                   portfolioNames={portfolioNames}
                   setPortfolioNames={setPortfolioNames}
-                  stockDataName={stockData.name}
                   setStockData={setStockData}
                />
             </section>
@@ -100,7 +100,7 @@ export default function Home() {
                         setStockData={setStockData}
                      />
                   ) : (
-                     <h2 className="text-xl text-white">Add your first stock to the watchlist!</h2>
+                     <h2 className="text-xl text-white">{stockData.active ? "Add your first stock to the watchlist!" : "Add your first Watchlist!"}</h2>
                   )}
                </>
             )}

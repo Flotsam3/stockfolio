@@ -43,6 +43,10 @@ const stockSchema = new Schema({
       required: true,
       unique: true
    },
+   active: {
+      type: Boolean,
+      default: false
+   },
    watchList:[watchListSchema],
    anualTargetReturn: {
       type: Number,

@@ -26,6 +26,7 @@ export type StockData = {
         anualTargetReturn?:number
     }],
     anualTargetReturn:number,
+    active:boolean,
     _id?:string
 }
 

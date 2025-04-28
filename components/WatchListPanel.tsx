@@ -24,10 +24,9 @@ export default function WatchListPanel({watchList, stockData, setStockData}:{wat
     async function handleEdit(obj:AddStockType){
         if (edit) {
             const data = await updateWatchList(input, stockData.name);
-            setEdit(false)
-            const activeWatchList = localStorage.getItem("watchList");
-            if (!activeWatchList) return;
-            const updateData = await getStockPortfolio(activeWatchList);
+            setEdit(false);
+
+            const updateData = await getStockPortfolio();
             setStockData(updateData);
         } else {
             setEdit(obj.isin);
@@ -50,7 +49,8 @@ export default function WatchListPanel({watchList, stockData, setStockData}:{wat
     async function handleDelete(id: string | undefined){
         if (!id) return;
         const response = await deleteOneWatchList(stockData.name, id);
-        const updateData = await getStockPortfolio(stockData.name);
+        
+        const updateData = await getStockPortfolio();
         setStockData(updateData);
     }
 
@@ -58,7 +58,7 @@ export default function WatchListPanel({watchList, stockData, setStockData}:{wat
   <>
   {watchList.map((obj, index) => {
     const safetyValues = calcSafetyMargin(obj);
-    return (
+    return (  
         <div key={index} className='flex flex-col items-center'>
             <div className="relative grid grid-cols-1 sm:grid-cols-custom-sm lg:grid-cols-custom-lg md:grid-cols-custom-tablet lg:w-[60vw] w-[95vw] sm:justify-center gap-3 lg:gap-0 bg-white mt-3 p-4 rounded-xl [&>div>input:first-child]:text-sm [&>div>p:first-child]:text-sm [&>div>input:first-child]:font-bold [&>div>p:first-child]:font-bold" >
                 {edit === obj.isin ? 

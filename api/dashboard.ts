@@ -22,9 +22,9 @@ export async function postStockPortfolio(payload:string){
     }
 }
 
-export async function getStockPortfolio(activeWatchList:string){
+export async function getStockPortfolio(){
     try {
-        const response = await fetch(`${BASE_URL}/watchlists?active=${activeWatchList}`);
+        const response = await fetch(`${BASE_URL}/watchlists`);
         let data;
         if (response.ok){
             data = await response.json();
@@ -51,6 +51,22 @@ export async function postNewWatchList(payload:AddStockType, name:string, target
         return data;
     } catch (error) {
         console.log(error);
+    }
+}
+
+export async function switchWatchList(id:string){
+    try {
+        const response = await fetch(`${BASE_URL}/watchlists/switch?id=${id}`, {
+            method: "PATCH"
+        });
+        let data;
+        if (response.ok){
+            data = await response.json();
+        }
+        console.log(data);
+        return data;
+    } catch (error) {
+        console.log();
     }
 }
 
