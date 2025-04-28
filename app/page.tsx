@@ -56,7 +56,7 @@ export default function Home() {
 
    return (
       <>
-         <div className="relative flex-1 bg-cover bg-center h-[100vh] bg-[url('/images/feature-bg.png')]">
+         <div title="Image by Luca Bravo on unsplash" className="relative flex-1 bg-cover bg-center h-[100vh] bg-[url('/images/feature-bg.png')]">
             <section className="absolute top-28 left-5 right-5">
                <Economics
                   economics={economics}
