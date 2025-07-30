@@ -54,11 +54,58 @@ export default function WatchListPanel({watchList, stockData, setStockData}:{wat
         setStockData(updateData);
     }
 
+    // Debugging function to log detailed calculations
+    function calcSafetyMarginDebug(obj: AddStockType) {
+    if (!obj.peRatioAverage) return;
+
+    // Force numbers to avoid string parsing issues
+    const dilutedEps = Number(obj.dilutedEps);
+    const growthForecast = Number(obj.growthForecast);
+    const peRatioAverage = Number(obj.peRatioAverage);
+    const anualTargetReturn = Number(stockData.anualTargetReturn);
+    const rate = Number(obj.rate);
+
+    console.log("---- DEBUG START ----");
+    console.log("Raw inputs (full precision):", {
+        dilutedEps,
+        growthForecast,
+        peRatioAverage,
+        anualTargetReturn,
+        rate
+    });
+
+    // Step 1
+    const profitPerShare5y = dilutedEps * Math.pow(1 + growthForecast / 100, 5);
+    console.log("profitPerShare5y =", profitPerShare5y);
+
+    // Step 2
+    const ratePerStock5y = profitPerShare5y * peRatioAverage;
+    console.log("ratePerStock5y =", ratePerStock5y);
+
+    // Step 3
+    const fundamentalValue = ratePerStock5y / Math.pow(1 + anualTargetReturn / 100, 5);
+    console.log("fundamentalValue (full precision) =", fundamentalValue);
+
+    // Step 4
+    let safetyMargin = -(rate / fundamentalValue - 1);
+    console.log("safetyMargin (raw) =", safetyMargin);
+
+    const Fv = fundamentalValue.toFixed(2);
+    console.log("Fv (rounded) =", Fv);
+
+    console.log("---- DEBUG END ----");
+
+    if (safetyMargin < 0) return { safetyMargin: "N/A", Fv };
+    return { safetyMargin: safetyMargin.toFixed(2), Fv };
+}
+
+
   return (
   <>
   {watchList.map((obj, index) => {
-    const safetyValues = calcSafetyMargin(obj);
-    return (  
+    //   const safetyValues = calcSafetyMargin(obj);
+      const safetyValues = calcSafetyMarginDebug(obj);
+      return (  
         <div key={index} className='flex flex-col items-center'>
             <div className="relative grid grid-cols-1 sm:grid-cols-custom-sm lg:grid-cols-custom-lg md:grid-cols-custom-tablet lg:w-[60vw] w-[95vw] sm:justify-center gap-3 lg:gap-0 bg-white mt-3 p-4 rounded-xl [&>div>input:first-child]:text-sm [&>div>p:first-child]:text-sm [&>div>input:first-child]:font-bold [&>div>p:first-child]:font-bold" >
                 {edit === obj.isin ? 
