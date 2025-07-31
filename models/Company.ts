@@ -37,16 +37,6 @@ const companySchema = new Schema({
     valuation: valuationSchema
  }, {timestamps: true});
 
-companySchema.index({ updatedAt: 1 }, { expireAfterSeconds: 60 * 60 * 24 * 365 });
-
 const CompanyModel = models.Company || model("Company", companySchema);
-
-CompanyModel.on('index', error => {
-    if (error) {
-      console.error('Error creating index:', error);
-    } else {
-      console.log('TTL index created');
-    }
-});
 
 export default CompanyModel;

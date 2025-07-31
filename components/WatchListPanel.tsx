@@ -20,6 +20,8 @@ export default function WatchListPanel({watchList, stockData, setStockData}:{wat
         growthForecast: 0,
         peRatio:"",
     });
+    const [infoModal, setInfoModal] = useState<string | false>(false);
+    const [infoText, setInfoText] = useState<string>("");
 
     async function handleEdit(obj:AddStockType){
         if (edit) {
@@ -53,6 +55,23 @@ export default function WatchListPanel({watchList, stockData, setStockData}:{wat
         const updateData = await getStockPortfolio();
         setStockData(updateData);
     }
+
+    function handleOpenInfoModal(obj: AddStockType) {
+        setInfoText(obj.info || "");
+        setInfoModal(obj.isin);
+    }
+
+    async function handleSaveInfo(obj: AddStockType) {
+        try {
+            await updateWatchList({ ...obj, info: infoText }, stockData.name);
+            setInfoModal(false);
+            // Optionally refresh data here
+            const updateData = await getStockPortfolio();
+            setStockData(updateData);
+        } catch (e) {
+            // handle error
+        }
+    }
     
   return (
   <>
@@ -69,12 +88,56 @@ export default function WatchListPanel({watchList, stockData, setStockData}:{wat
                     </div>
                     <div className='sm:col-span-1 flex flex-col items-center [&>input]:w-[90%] [&>input]:bg-slate-200 [&>input]:rounded-md [&>input]:p-1 [&>input]:outline-none [&>*]:text-center'>
                         <input  type="text" onChange={(evt)=>setInput({...input, isin:evt.target.value})} value={input.isin}/>
-                        <img
-                            
-                            src={`https://flagcdn.com/w40/${obj.country}.png`}
-                            srcSet={`https://flagcdn.com/w80/${obj.country}.png 2x`}
-                            width="40"
-                            alt="Country flag" />
+                        <div className="flex items-center gap-1 relative">
+                            <img
+                                src={`https://flagcdn.com/w40/${obj.country}.png`}
+                                srcSet={`https://flagcdn.com/w80/${obj.country}.png 2x`}
+                                width="40"
+                                alt="Country flag" />
+                            <div
+                                className="relative"
+                                onMouseEnter={e => {
+                                    const tooltip = document.getElementById(`tooltip-${obj.isin}`);
+                                    if (tooltip) tooltip.style.display = 'block';
+                                }}
+                                onMouseLeave={e => {
+                                    const tooltip = document.getElementById(`tooltip-${obj.isin}`);
+                                    if (tooltip) tooltip.style.display = 'none';
+                                }}
+                            >
+                                <button
+                                    type="button"
+                                    className="ml-1 text-blue-500 hover:text-blue-700"
+                                    title="Edit info"
+                                    onClick={() => handleOpenInfoModal(obj)}
+                                >
+                                    <span style={{fontSize: '18px'}}>💡</span>
+                                </button>
+                                {/* Tooltip on hover */}
+                                <div
+                                    id={`tooltip-${obj.isin}`}
+                                    style={{display: 'none'}}
+                                    className="absolute left-6 top-0 z-50 bg-white text-gray-800 border border-gray-300 rounded shadow-lg p-2 text-xs w-64 max-w-xs"
+                                >
+                                    {/* CreatedAt */}
+                                    {obj.createdAt && (
+                                        <div className="mb-1 text-xs text-gray-500">
+                                            Created: {new Date(obj.createdAt).toLocaleString()}
+                                        </div>
+                                    )}
+                                    {/* UpdatedAt if different */}
+                                    {obj.updatedAt && obj.updatedAt !== obj.createdAt && (
+                                        <div className="mb-2 text-xs text-gray-500">
+                                            Updated: {new Date(obj.updatedAt).toLocaleString()}
+                                        </div>
+                                    )}
+                                    {/* Info content */}
+                                    <div>
+                                        {obj.info ? obj.info : <span className="italic text-gray-400">No info</span>}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div className='flex flex-col items-center sm:col-span-1 [&>input]:w-[90%] [&>input]:bg-slate-200 [&>input]:rounded-md [&>input]:p-1 [&>input]:outline-none [&>*]:text-center'>
                         <p >Rate</p>
@@ -92,11 +155,56 @@ export default function WatchListPanel({watchList, stockData, setStockData}:{wat
                     </div>
                     <div className='sm:col-span-1 flex flex-col items-center [&>*]:text-center'>
                         <p>{obj.isin}</p>
-                        <img
-                            src={`https://flagcdn.com/w40/${obj.country}.png`}
-                            srcSet={`https://flagcdn.com/w80/${obj.country}.png 2x`}
-                            width="40"
-                            alt="Country flag" />
+                        <div className="flex items-center gap-1 relative">
+                            <img
+                                src={`https://flagcdn.com/w40/${obj.country}.png`}
+                                srcSet={`https://flagcdn.com/w80/${obj.country}.png 2x`}
+                                width="40"
+                                alt="Country flag" />
+                            <div
+                                className="relative"
+                                onMouseEnter={e => {
+                                    const tooltip = document.getElementById(`tooltip-${obj.isin}`);
+                                    if (tooltip) tooltip.style.display = 'block';
+                                }}
+                                onMouseLeave={e => {
+                                    const tooltip = document.getElementById(`tooltip-${obj.isin}`);
+                                    if (tooltip) tooltip.style.display = 'none';
+                                }}
+                            >
+                                <button
+                                    type="button"
+                                    className="ml-1 text-blue-500 hover:text-blue-700"
+                                    title="Edit info"
+                                    onClick={() => handleOpenInfoModal(obj)}
+                                >
+                                    <span style={{fontSize: '18px'}}>💡</span>
+                                </button>
+                                {/* Tooltip on hover */}
+                                <div
+                                    id={`tooltip-${obj.isin}`}
+                                    style={{display: 'none'}}
+                                    className="absolute left-6 top-0 z-50 bg-white text-gray-800 border border-gray-300 rounded shadow-lg p-2 text-xs w-64 max-w-xs"
+                                >
+                                    {/* CreatedAt */}
+                                    {obj.createdAt && (
+                                        <div className="mb-1 text-xs text-gray-500">
+                                            Created: {new Date(obj.createdAt).toLocaleString()}
+                                        </div>
+                                    )}
+                                    {/* UpdatedAt if different */}
+                                    {obj.updatedAt && obj.updatedAt !== obj.createdAt && (
+                                        <div className="mb-2 text-xs text-gray-500">
+                                            Updated: {new Date(obj.updatedAt).toLocaleString()}
+                                        </div>
+                                    )}
+                                    {/* Info content */}
+                                    <div>
+                                        {obj.info ? obj.info : <span className="italic text-gray-400">No info</span>}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div className='sm:col-span-1 [&>*]:text-center'>
                         <p>Rate</p>
@@ -143,6 +251,45 @@ export default function WatchListPanel({watchList, stockData, setStockData}:{wat
                 </div>
                 <span onClick={()=>setEdit(false)} className='absolute top-0 right-2 text-sm cursor-pointer'>x</span>
             </div>
+            {/* Info Modal */}
+            {infoModal === obj.isin && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+                    <div className="bg-white rounded-lg p-6 w-[90vw] max-w-md shadow-lg relative">
+                        <button
+                            className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+                            onClick={() => setInfoModal(false)}
+                        >x</button>
+                        <h2 className="text-lg font-bold mb-2">Edit Info for {obj.ticker}</h2>
+                        {/* Show createdAt at the very top, updatedAt below if different */}
+                        {obj.createdAt && (
+                            <div className="mb-1 text-xs text-gray-500">
+                                Created: {new Date(obj.createdAt).toLocaleString()}
+                            </div>
+                        )}
+                        {obj.updatedAt && obj.updatedAt !== obj.createdAt && (
+                            <div className="mb-2 text-xs text-gray-500">
+                                Updated: {new Date(obj.updatedAt).toLocaleString()}
+                            </div>
+                        )}
+                        <textarea
+                            className="w-full border rounded p-2 mb-4"
+                            rows={4}
+                            value={infoText}
+                            onChange={e => setInfoText(e.target.value)}
+                        />
+                        <div className="flex justify-end gap-2">
+                            <button
+                                className="px-4 py-1 bg-gray-300 rounded hover:bg-gray-400"
+                                onClick={() => setInfoModal(false)}
+                            >Cancel</button>
+                            <button
+                                className="px-4 py-1 bg-green-600 text-white rounded hover:bg-green-700"
+                                onClick={() => handleSaveInfo(obj)}
+                            >Save</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 })}

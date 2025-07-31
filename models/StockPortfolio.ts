@@ -34,6 +34,10 @@ const watchListSchema = new Schema({
       required: [true, "A PE Ratio is required!"]
    },
    peRatioAverage: Number,
+   info: {
+      type: String,
+      default: ""
+   }
 }, {timestamps:true});
   
 

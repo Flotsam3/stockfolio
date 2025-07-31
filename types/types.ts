@@ -9,7 +9,10 @@ export type AddStockType = {
     peRatio:string,
     peRatioAverage?:number,
     anualTargetReturn?:number
-    _id?:string
+    _id?:string,
+    info?: string;
+    updatedAt?: string;
+    createdAt?: string;
 }
 
 export type StockData = {

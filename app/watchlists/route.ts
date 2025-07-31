@@ -54,23 +54,29 @@ export async function PATCH(request: Request){
         const body = await request.json();
 
         body.payload.peRatioAverage = (body.payload.peRatio.replace(/,/g, ".").split(";").reduce((acc:string, curr:string)=>{return acc + +curr },0) / 5).toFixed(2);
-       
+
         console.log("payload", body.payload);
 
-        const stock = await StockPortfolio.findOne({ name: body.name });
-    
-        // Find the index of the item to update
-        const itemIndex = stock.watchList.findIndex(
-            (item:any) => item._id.toString() === body.payload._id
+        // Use $set with positional operator to update only the fields, including info
+        const response = await StockPortfolio.updateOne(
+            { name: body.name, "watchList._id": body.payload._id },
+            {
+                $set: {
+                    "watchList.$.name": body.payload.name,
+                    "watchList.$.ticker": body.payload.ticker,
+                    "watchList.$.isin": body.payload.isin,
+                    "watchList.$.country": body.payload.country,
+                    "watchList.$.rate": body.payload.rate,
+                    "watchList.$.dilutedEps": body.payload.dilutedEps,
+                    "watchList.$.growthForecast": body.payload.growthForecast,
+                    "watchList.$.peRatio": body.payload.peRatio,
+                    "watchList.$.peRatioAverage": body.payload.peRatioAverage,
+                    "watchList.$.info": body.payload.info ?? ""
+                }
+            }
         );
 
-        // Update the item
-        if (itemIndex > -1) {
-            stock.watchList[itemIndex] = body.payload;
-            await stock.save();
-        }
-
-        return Response.json(null, {status:200});
+        return Response.json(response, {status:200});
     } catch (error) {
         console.log(error);
         return Response.json({msg: "Server error!"}, {status:500});
