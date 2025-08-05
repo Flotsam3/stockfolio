@@ -26,9 +26,10 @@ export default function AddStock({setStockData, stockData}:{setStockData: Dispat
             evt.preventDefault();
             console.log("stockData name", stockData.name);
             if (!stockData.name) return notify();
-            if (!input.name || !input.ticker || !input.isin || !input.country || !input.peRatio) return;
+            // if (!input.name || !input.ticker || !input.isin || !input.country || !input.peRatio) return;
+            if (!input.name || !input.ticker || !input.isin || !input.country) return;
             await postNewWatchList(input, stockData.name, stockData.anualTargetReturn);
-            const data = await getStockPortfolio(stockData.name);
+            const data = await getStockPortfolio();
             if (!data) return console.log("Error while fetching stock data!");
             setStockData(data);
             setInput({
