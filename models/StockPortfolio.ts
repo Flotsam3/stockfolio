@@ -1,4 +1,5 @@
 import {Schema, model, models} from "mongoose";
+import { unique } from "next/dist/build/utils";
 
 const watchListSchema = new Schema({
    name: {
@@ -7,11 +8,12 @@ const watchListSchema = new Schema({
    },
    ticker: {
       type: String,
-      required: [true, "A ticker code is required!"]
+      required: [true, "A ticker code is required!"],
+      unique: true
    },
    isin: {
       type: String,
-      required: [true, "An ISIN number is required"]
+      unique: true
    },
    country: {
       type: String,
