@@ -46,8 +46,7 @@ const watchListSchema = new Schema({
 const stockSchema = new Schema({
    name: {
       type: String,
-      required: true,
-      unique: true
+      required: true
    },
    active: {
       type: Boolean,
@@ -58,6 +57,11 @@ const stockSchema = new Schema({
       type: Number,
       default: 12
    },
+   userId: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true
+   }
 }, {timestamps:true});
 
 const StockPortfolio = models.StockPortfolio || model("StockPortfolio", stockSchema);

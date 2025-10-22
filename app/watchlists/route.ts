@@ -1,20 +1,30 @@
 import StockPortfolio from "@/models/StockPortfolio";
 import { connectDB } from "@/libs/connectDB";
+import jwt from "jsonwebtoken";
+import { cookies } from "next/headers";
 
 export async function POST(request: Request) {
    try {
       await connectDB();
       const body = await request.json();
-      console.log({ body });
-      // Deactivate all portfolios
+      const cookieStore = await cookies();
+      const token = cookieStore.get("token")?.value;
+      if (!token) {
+         return Response.json({ error: "Not authenticated" }, { status: 401 });
+      }
+
+      const payload = jwt.verify(token, process.env.JWT_SECRET || "") as { id: string };
+      const userId = payload.id;
+
+      // Deactivate all portfolios for this user
       const response1 = await StockPortfolio.updateMany(
-         { active: true },
+         { userId, active: true },
          { $set: { active: false } }
       );
       console.log({ response1 });
 
       // Create new portfolio and set it active
-      const response2 = await StockPortfolio.create({ name: body, active: true });
+      const response2 = await StockPortfolio.create({ name: body, active: true, userId });
       return Response.json(response2, { status: 201 });
    } catch (error) {
       console.log(error);
@@ -22,11 +32,19 @@ export async function POST(request: Request) {
    }
 }
 
-export async function GET() {
+export async function GET(request: Request) {
    try {
       await connectDB();
+      const cookieStore = await cookies();
+      const token = cookieStore.get("token")?.value;
+      if (!token) {
+         return Response.json({ error: "Not authenticated" }, { status: 401 });
+      }
 
-      const response = await StockPortfolio.findOne({ active: true });
+      const payload = jwt.verify(token, process.env.JWT_SECRET || "") as { id: string };
+      const userId = payload.id;
+
+      const response = await StockPortfolio.findOne({ userId, active: true });
       return Response.json(response, { status: 200 });
    } catch (error) {
       console.log(error);

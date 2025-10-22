@@ -1,8 +1,19 @@
 import StockPortfolio from "@/models/StockPortfolio";
+import { cookies } from "next/headers";
+import jwt from "jsonwebtoken";
 
 export async function GET(){
     try {
-        const response = await StockPortfolio.find().select('name active');
+        const cookieStore = await cookies();
+        const token = cookieStore.get("token")?.value;
+        if (!token) {
+            return Response.json({ error: "Not authenticated" }, { status: 401 });
+        }
+
+        const payload = jwt.verify(token, process.env.JWT_SECRET || "") as { id: string };
+        const userId = payload.id;
+
+        const response = await StockPortfolio.find({ userId }).select('name active');
         return Response.json(response, { status: 200 });
     } catch (error) {
         console.log(error);

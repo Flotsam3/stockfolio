@@ -34,7 +34,12 @@ const companySchema = new Schema({
     profitability: profitabilitySchema,
     efficiencyAndLeverage:  efficiencyAndLeverageSchema,
     liquidity: liquiditySchema, 
-    valuation: valuationSchema
+    valuation: valuationSchema,
+    stockPortfolioId: {
+        type: Schema.Types.ObjectId,
+        ref: 'StockPortfolio',
+        required: true
+    }
  }, {timestamps: true});
 
 const CompanyModel = models.Company || model("Company", companySchema);
