@@ -1,0 +1,47 @@
+"use client";
+
+import { useState } from "react";
+import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
+
+export default function RegisterPage() {
+  const router = useRouter();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [msg, setMsg] = useState("");
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    try {
+      const res = await fetch(`/api/auth/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password })
+      });
+      const data = await res.json();
+      if (res.ok && data.token) {
+        Cookies.set("token", data.token);
+        setMsg("Registered successfully");
+        router.push("/"); // Redirect to home after successful registration
+      } else {
+        setMsg(data.error || "Registration failed");
+      }
+    } catch (error) {
+      setMsg(String(error));
+    }
+  }
+
+  return (
+    <div className="min-h-screen flex items-center justify-center">
+      <form onSubmit={submit} className="flex flex-col gap-3 w-80">
+        <h2 className="text-xl">Register</h2>
+        <input value={name} onChange={e => setName(e.target.value)} placeholder="Name" />
+        <input value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" />
+        <input value={password} onChange={e => setPassword(e.target.value)} placeholder="Password" type="password" />
+        <button className="btn" type="submit">Register</button>
+        {msg && <p>{msg}</p>}
+      </form>
+    </div>
+  );
+}
