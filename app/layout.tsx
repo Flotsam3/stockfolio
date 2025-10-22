@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import Navigation from "../components/Navigation";
 import { StockProvider } from "./context/StockContext";
 import Head from "next/head";
 
@@ -34,7 +33,7 @@ export default function RootLayout({
 }>) {
    return (
       <html lang="en">
-         <Head>
+         <head>
             <link
                rel="stylesheet"
                href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
@@ -42,15 +41,10 @@ export default function RootLayout({
                crossOrigin="anonymous"
                referrerPolicy="no-referrer"
             />
-         </Head>
-         <StockProvider>
-            <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-               <div className="flex flex-col flex-grow">
-                  <Navigation />
-                  <main className="flex-grow">{children}</main>
-               </div>
-            </body>
-         </StockProvider>
+         </head>
+         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+            {children}
+         </body>
       </html>
    );
 }

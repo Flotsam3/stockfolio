@@ -12,7 +12,7 @@ import { getStockPortfolio } from "@/api/dashboard";
 import { getAllPortfolios } from "@/api/dashboard";
 import { useStockContext } from "@/app/context/StockContext";
 
-export default function Dashboard() {
+export default function DashboardClient() {
    const { stockData, setStockData, showAddWatchlist, setShowAddWatchlist } = useStockContext();
 
    const [economics, setEconomics] = useState<EconomicsType>({
