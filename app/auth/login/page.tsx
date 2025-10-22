@@ -19,10 +19,9 @@ export default function LoginPage() {
         body: JSON.stringify({ email, password })
       });
       const data = await res.json();
-      if (res.ok && data.token) {
-        Cookies.set("token", data.token);
+      if (res.ok) {
         setMsg("Logged in");
-        router.push("/"); // Redirect to home after successful login
+        router.push("/dashboard"); // Redirect to dashboard after successful login
       } else {
         setMsg(data.error || "Login failed");
       }

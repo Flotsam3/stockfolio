@@ -26,7 +26,16 @@ export async function POST(req: Request) {
 
     const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET || "", { expiresIn: "7d" });
 
-    return NextResponse.json({ user: { id: user._id, name: user.name, email: user.email }, token });
+    const res = NextResponse.json({ user: { id: user._id, name: user.name, email: user.email } });
+    res.cookies.set('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 7 * 24 * 60 * 60 // 7 days
+    });
+
+    return res;
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: String(error) }, { status: 500 });

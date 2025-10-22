@@ -20,10 +20,9 @@ export default function RegisterPage() {
         body: JSON.stringify({ name, email, password })
       });
       const data = await res.json();
-      if (res.ok && data.token) {
-        Cookies.set("token", data.token);
+      if (res.ok) {
         setMsg("Registered successfully");
-        router.push("/"); // Redirect to home after successful registration
+        router.push("/dashboard"); // Redirect to dashboard after successful registration
       } else {
         setMsg(data.error || "Registration failed");
       }
