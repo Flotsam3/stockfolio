@@ -10,6 +10,7 @@ export default function AddWatchList({portfolioNames, setPortfolioNames,  setSto
     const [input, setInput] = useState("");
 
     const notify = () => toast.success("Added a new watchlist!");
+    const notifyError = (msg:string) => toast.error(msg || "Could not create watchlist");
 
     console.log({portfolioNames});
     
@@ -18,10 +19,20 @@ export default function AddWatchList({portfolioNames, setPortfolioNames,  setSto
         try {
             const response = await postStockPortfolio(input);
             notify();
-            setStockData(response);
+            if (response && response._id) {
+                notify();
+                setStockData(response);
+            } else {
+                console.warn("Unexpected response from postStockPortfolio", response);
+                notifyError(response?.error || response?.msg || "Failed to create watchlist");
+            }
 
             const updatedData = await getAllPortfolios();
-            setPortfolioNames(updatedData);
+            if (Array.isArray(updatedData)) {
+                setPortfolioNames(updatedData);
+            } else {
+                console.warn('Unexpected portfolios response', updatedData);
+            }
             setInput("");
         } catch (error) {
             console.log(error); 

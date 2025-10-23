@@ -9,11 +9,10 @@ const watchListSchema = new Schema({
    ticker: {
       type: String,
       required: [true, "A ticker code is required!"],
-      unique: true
+      // removed unique constraint to avoid global unique index on embedded field
    },
    isin: {
-      type: String,
-      unique: true
+      type: String
    },
    country: {
       type: String,
@@ -52,7 +51,7 @@ const stockSchema = new Schema({
       type: Boolean,
       default: false
    },
-   watchList:[watchListSchema],
+   watchList: { type: [watchListSchema], default: [] },
    anualTargetReturn: {
       type: Number,
       default: 12
@@ -63,6 +62,9 @@ const stockSchema = new Schema({
       required: true
    }
 }, {timestamps:true});
+
+// Ensure portfolio names are unique per user
+stockSchema.index({ userId: 1, name: 1 }, { unique: true });
 
 const StockPortfolio = models.StockPortfolio || model("StockPortfolio", stockSchema);
 

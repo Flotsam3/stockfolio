@@ -40,7 +40,7 @@ export default function WatchListPanel({
          setEdit(false);
 
          const updateData = await getStockPortfolio();
-         setStockData(updateData);
+         if (updateData && updateData._id) setStockData(updateData);
       } else {
          setEdit(obj.isin);
          setInput(obj);
@@ -63,8 +63,8 @@ export default function WatchListPanel({
       if (!id) return;
       const response = await deleteOneWatchList(stockData.name, id);
 
-      const updateData = await getStockPortfolio();
-      setStockData(updateData);
+   const updateData = await getStockPortfolio();
+   if (updateData && updateData._id) setStockData(updateData);
    }
 
    function handleOpenInfoModal(obj: AddStockType) {
@@ -78,7 +78,7 @@ export default function WatchListPanel({
          setInfoModal(false);
          // Optionally refresh data here
          const updateData = await getStockPortfolio();
-         setStockData(updateData);
+         if (updateData && updateData._id) setStockData(updateData);
       } catch (e) {
          // handle error
       }

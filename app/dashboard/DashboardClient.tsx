@@ -63,7 +63,7 @@ export default function DashboardClient() {
                   economics={economics}
                   setEconomics={setEconomics}
                   targetReturn={targetReturn}
-                  activeStock={stockData.name}
+                  activeStock={stockData?.name || ""}
                   setStockData={setStockData}
                />
                <div className="hidden md:block">
@@ -92,16 +92,20 @@ export default function DashboardClient() {
                <h2 className="mt-4 text-2xl text-white">Loading data...</h2>
             ) : (
                <>
-                  <h2 className="text-center text-white text-3xl pt-8">{stockData.name}</h2>
-                  {stockData.watchList[0]?.name !== "" ? (
-                     <WatchListPanel
-                        watchList={stockData.watchList}
-                        stockData={stockData}
-                        setStockData={setStockData}
-                     />
-                  ) : (
-                     <h2 className="text-xl text-white">{stockData.active ? "Add your first stock to the watchlist!" : "Add your first Watchlist!"}</h2>
-                  )}
+                  <h2 className="text-center text-white text-3xl pt-8">{stockData?.name || ""}</h2>
+                  {(() => {
+                     const firstWatchName = stockData?.watchList?.[0]?.name ?? "";
+                     return firstWatchName !== "" ? (
+                        <WatchListPanel
+                           watchList={stockData.watchList}
+                           stockData={stockData}
+                           setStockData={setStockData}
+                        />
+                     ) : (
+                        <h2 className="text-xl text-white">{stockData?.active ? "Add your first stock to the watchlist!" : "Add your first Watchlist!"}</h2>
+                     );
+                  })()}
+                 
                </>
             )}
          </div>

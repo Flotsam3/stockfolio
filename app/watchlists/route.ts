@@ -24,11 +24,20 @@ export async function POST(request: Request) {
       console.log({ response1 });
 
       // Create new portfolio and set it active
+      console.log('Creating portfolio', { name: body, userId });
       const response2 = await StockPortfolio.create({ name: body, active: true, userId });
       return Response.json(response2, { status: 201 });
-   } catch (error) {
+   } catch (error: any) {
       console.log(error);
-      return Response.json({ msg: "Server error!" }, { status: 500 });
+      // Mongoose duplicate key
+      if (error?.code === 11000) {
+         return Response.json({ error: 'A portfolio with that name already exists for this user.' }, { status: 409 });
+      }
+      // Validation errors
+      if (error?.name === 'ValidationError') {
+         return Response.json({ error: error.message }, { status: 400 });
+      }
+      return Response.json({ msg: "Server error!", error: String(error) }, { status: 500 });
    }
 }
 
@@ -56,6 +65,11 @@ export async function PUT(request: Request) {
    try {
       await connectDB();
       const body = await request.json();
+   const cookieStore = await cookies();
+   const token = cookieStore.get("token")?.value;
+   if (!token) return Response.json({ error: "Not authenticated" }, { status: 401 });
+   const payload = jwt.verify(token, process.env.JWT_SECRET || "") as { id: string };
+   const userId = payload.id;
 
       const peRatios = body.payload.peRatio
          .replace(/,/g, ".")
@@ -72,9 +86,11 @@ export async function PUT(request: Request) {
          body.payload.peRatioAverage = null;
       }
 
-      const response = await StockPortfolio.updateOne(
-         { name: body.name },
-         { $push: { watchList: body.payload } }
+      // Push into the portfolio that belongs to this user
+      const response = await StockPortfolio.findOneAndUpdate(
+         { name: body.name, userId },
+         { $push: { watchList: body.payload } },
+         { new: true }
       );
       return Response.json(response, { status: 200 });
    } catch (error) {
@@ -106,8 +122,14 @@ export async function PATCH(request: Request) {
       console.log("payload", body.payload);
 
       // Use $set with positional operator to update only the fields, including info
-      const response = await StockPortfolio.updateOne(
-         { name: body.name, "watchList._id": body.payload._id },
+      const cookieStore = await cookies();
+      const token = cookieStore.get("token")?.value;
+      if (!token) return Response.json({ error: "Not authenticated" }, { status: 401 });
+      const payload = jwt.verify(token, process.env.JWT_SECRET || "") as { id: string };
+      const userId = payload.id;
+
+      const response = await StockPortfolio.findOneAndUpdate(
+         { name: body.name, userId, "watchList._id": body.payload._id },
          {
             $set: {
                "watchList.$.name": body.payload.name,
@@ -121,7 +143,8 @@ export async function PATCH(request: Request) {
                "watchList.$.peRatioAverage": body.payload.peRatioAverage,
                "watchList.$.info": body.payload.info ?? "",
             },
-         }
+         },
+         { new: true }
       );
 
       return Response.json(response, { status: 200 });
@@ -143,14 +166,21 @@ export async function DELETE(request: Request) {
       if (!name || !stockId) {
          return Response.json({ msg: "name and stockId are required" }, { status: 400 });
       }
-      const portfolio = await StockPortfolio.findOne({ name });
+      const cookieStore = await cookies();
+      const token = cookieStore.get("token")?.value;
+      if (!token) return Response.json({ error: "Not authenticated" }, { status: 401 });
+      const payload = jwt.verify(token, process.env.JWT_SECRET || "") as { id: string };
+      const userId = payload.id;
+
+      const portfolio = await StockPortfolio.findOne({ name, userId });
+      if (!portfolio) return Response.json({ msg: "Portfolio not found" }, { status: 404 });
 
       const index = portfolio.watchList.findIndex((obj: any) => obj._id.toString() === stockId);
 
       if (index !== -1) {
          portfolio.watchList.splice(index, 1);
       }
-      const response = portfolio.save();
+      const response = await portfolio.save();
 
       return Response.json(response, { status: 200 });
    } catch (error) {

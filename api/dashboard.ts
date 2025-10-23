@@ -10,10 +10,7 @@ export async function postStockPortfolio(payload:string){
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(payload)
         });
-        let data;
-        if (response.ok){
-            data = await response.json();
-        }
+        const data = await response.json();
         console.log(data);
         return data;
         
@@ -25,10 +22,7 @@ export async function postStockPortfolio(payload:string){
 export async function getStockPortfolio(){
     try {
         const response = await fetch(`${BASE_URL}/watchlists`);
-        let data;
-        if (response.ok){
-            data = await response.json();
-        }
+        const data = await response.json();
         console.log(data);
         return data;
     } catch (error) {
@@ -43,10 +37,7 @@ export async function postNewWatchList(payload:AddStockType, name:string, target
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({payload, name, targetReturn})
         });
-        let data;
-        if (response.ok){
-            data = await response.json();
-        }
+        const data = await response.json();
         console.log(data);
         return data;
     } catch (error) {
@@ -59,10 +50,7 @@ export async function switchWatchList(id:string){
         const response = await fetch(`${BASE_URL}/watchlists/switch?id=${id}`, {
             method: "PATCH"
         });
-        let data;
-        if (response.ok){
-            data = await response.json();
-        }
+        const data = await response.json();
         console.log(data);
         return data;
     } catch (error) {
@@ -77,10 +65,7 @@ export async function updateWatchList(payload:AddStockType, name:string){
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({payload, name})
         });
-        let data;
-        if (response.ok){
-            data = await response.json();
-        }
+        const data = await response.json();
         console.log(data);
         return data;
     } catch (error) {
@@ -91,10 +76,7 @@ export async function updateWatchList(payload:AddStockType, name:string){
 export async function getAllPortfolios(){
     try {
         const response = await fetch(`${BASE_URL}/portfolios`);
-        let data;
-        if (response.ok){
-            data = await response.json();
-        }
+        const data = await response.json();
         console.log(data);
         return data;
     } catch (error) {
@@ -125,10 +107,7 @@ export async function deleteOneWatchList(name:string, id:string){
         const response = await fetch(`${BASE_URL}/watchlists?name=${name}&stockId=${id}`, {
             method: "DELETE"
         });
-        let data;
-        if (response.ok){
-            data = await response.json();
-        }
+        const data = await response.json();
         console.log(data);
         return data;
     } catch (error) {
