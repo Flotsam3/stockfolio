@@ -56,6 +56,10 @@ export default function LandingPage() {
     { symbol: 'MSFT', change: '+3.12' }
   ];
 
+  function getYear(){
+    return new Date().getFullYear();
+  }
+
   return (
     <div className="min-h-screen bg-[#161616] text-white">
       {/* Navigation */}
@@ -257,7 +261,7 @@ export default function LandingPage() {
               <span className="text-xl font-bold">Stockfolio</span>
             </div>
             <p className="text-gray-500 text-sm">
-              © 2024 Stockfolio. All rights reserved.
+              © {getYear()} Stockfolio. All rights reserved.
             </p>
             <div className="flex gap-6 text-sm text-gray-400">
               <Link href="/privacy" className="hover:text-[#facc15] transition-colors">
