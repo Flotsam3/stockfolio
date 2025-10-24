@@ -2,9 +2,9 @@
 
 import React, { useState, Dispatch, SetStateAction } from 'react';
 import { StockData } from '../types/types';
-import { getStockPortfolio } from '@/api/dashboard';
+import { getStockPortfolio } from '@/services/dashboard';
 import { AddStockType } from '../types/types';
-import { postNewWatchList } from '@/api/dashboard';
+import { postNewWatchList } from '@/services/dashboard';
 import toast, {Toaster} from "react-hot-toast";
 
 export default function AddStock({setStockData, stockData}:{setStockData: Dispatch<SetStateAction<StockData>>, stockData:StockData}) {

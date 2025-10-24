@@ -8,8 +8,8 @@ import AddWatchList from "@/components/AddWatchList";
 import { StockData } from "@/types/types";
 import { useEffect, useState } from "react";
 import { EconomicsType } from "@/types/types";
-import { getStockPortfolio } from "@/api/dashboard";
-import { getAllPortfolios } from "@/api/dashboard";
+import { getStockPortfolio } from "@/services/dashboard";
+import { getAllPortfolios } from "@/services/dashboard";
 import { useStockContext } from "@/app/context/StockContext";
 
 export default function DashboardClient() {

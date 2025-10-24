@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { getIncomeStatement, getBalanceSheet, getCashFlow, getMonthlyStock } from '@/libs/api';
 import { useStockContext } from '@/app/context/StockContext';
 import toast, { Toaster } from 'react-hot-toast';
-import { getCompany, createCompany, updateCompany } from '@/api/company';
+import { getCompany, createCompany, updateCompany } from '@/services/company';
 import AnalysisSection from '@/components/AnalysisSection';
 import { processEfficiencyAndLeverage } from '../../fundamentals/processEfficiencyAndLeverage';
 import { processLiquidity } from '../../fundamentals/processLiquidity';

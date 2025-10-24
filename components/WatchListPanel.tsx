@@ -3,11 +3,11 @@
 import React, { useState, Dispatch, SetStateAction } from "react";
 import { AddStockType } from "@/types/types";
 import { StockData } from "@/types/types";
-import { updateWatchList } from "@/api/dashboard";
-import { getStockPortfolio } from "@/api/dashboard";
-import { deleteOneWatchList } from "@/api/dashboard";
+import { updateWatchList } from "@/services/dashboard";
+import { getStockPortfolio } from "@/services/dashboard";
+import { deleteOneWatchList } from "@/services/dashboard";
 import Link from "next/link";
-import { fetchPERatios } from "@/api/stockanalysis";
+import { fetchPERatios } from "@/services/stockanalysis";
 import "./WatchListPanel.css";
 
 export default function WatchListPanel({

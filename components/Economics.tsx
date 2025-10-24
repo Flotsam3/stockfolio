@@ -1,9 +1,9 @@
 "use client";
 import { EconomicsType } from "@/types/types";
 import React, { useEffect, useState, Dispatch, SetStateAction } from "react";
-import { updateAnualTargetReturn } from "@/api/dashboard";
+import { updateAnualTargetReturn } from "@/services/dashboard";
 import { StockData } from "@/types/types";
-import { getStockPortfolio } from "@/api/dashboard";
+import { getStockPortfolio } from "@/services/dashboard";
 import { prepareEconomics } from "./EconomicsHelper";
 import toast, { Toaster } from "react-hot-toast";
 

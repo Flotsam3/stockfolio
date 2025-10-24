@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
-import { getEconomics } from "@/api/economics";
-import { postEconomics } from "@/api/economics";
-import { updateEconomics } from "@/api/economics";
+import { getEconomics } from "@/services/economics";
+import { postEconomics } from "@/services/economics";
+import { updateEconomics } from "@/services/economics";
 import { DateTime } from "luxon";
 import { getInflation } from "@/libs/api";
 import { getCpi } from "@/libs/api";

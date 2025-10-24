@@ -1,9 +1,9 @@
 "use client"
 
 import React, { useState, Dispatch, SetStateAction } from 'react';
-import { postStockPortfolio } from '@/api/dashboard';
+import { postStockPortfolio } from '@/services/dashboard';
 import { StockData } from '@/types/types';
-import { getAllPortfolios, switchWatchList } from '@/api/dashboard';
+import { getAllPortfolios, switchWatchList } from '@/services/dashboard';
 import toast, {Toaster} from "react-hot-toast";
 
 export default function AddWatchList({portfolioNames, setPortfolioNames,  setStockData}:{portfolioNames:StockData[], setPortfolioNames:Dispatch<SetStateAction<StockData[]>>, setStockData:Dispatch<SetStateAction<StockData>>}) {
