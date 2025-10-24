@@ -3,21 +3,15 @@
 import React, {useState} from 'react';
 import Link from "next/link";
 import { useStockContext } from '@/app/context/StockContext';
-import { useRouter } from 'next/navigation';
-
+import { signOut } from "next-auth/react";
 
 export default function Navigation() {
   const [showMenu, setShowMenu] = useState(false);
   const {setShowAddWatchlist} = useStockContext();
-  const router = useRouter();
 
-  async function handleLogout(){
-    try {
-      await fetch('/api/auth/logout', { method: 'POST' });
-    } catch (e) {
-      console.error('Logout failed', e);
-    }
-    router.push('/');
+  // ✅ REPLACE handleLogout with this:
+  function handleLogout(){
+    signOut({ callbackUrl: "/auth/login" });
   }
   
   return (
