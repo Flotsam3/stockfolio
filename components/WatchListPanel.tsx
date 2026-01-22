@@ -8,6 +8,7 @@ import { getStockPortfolio } from "@/services/dashboard";
 import { deleteOneWatchList } from "@/services/dashboard";
 import Link from "next/link";
 import { fetchPERatios } from "@/services/stockanalysis";
+import { calcSafetyMargin } from "@/utils/stockCalculations";
 import "./WatchListPanel.css";
 
 export default function WatchListPanel({
@@ -47,17 +48,19 @@ export default function WatchListPanel({
       }
    }
 
-   function calcSafetyMargin(obj: AddStockType) {
-      if (!obj.peRatioAverage) return;
+   // function calcSafetyMargin(obj: AddStockType) {
+   //    if (!obj.peRatioAverage) return;
 
-      const profitPerShare5y = obj.dilutedEps * (1 + obj.growthForecast / 100) ** 5;
-      const ratePerStock5y = profitPerShare5y * obj.peRatioAverage;
-      const fundamentalValue = ratePerStock5y / (1 + stockData.anualTargetReturn / 100) ** 5;
-      let safetyMargin = -(obj.rate / fundamentalValue - 1).toFixed(2);
-      const Fv = fundamentalValue.toFixed(2);
-      if (safetyMargin < 0) return { safetyMargin: "N/A", Fv };
-      return { safetyMargin, Fv };
-   }
+   //    const profitPerShare5y = obj.dilutedEps * (1 + obj.growthForecast / 100) ** 5;
+   //    const ratePerStock5y = profitPerShare5y * obj.peRatioAverage;
+   //    const fundamentalValue = ratePerStock5y / (1 + stockData.anualTargetReturn / 100) ** 5;
+   //    let safetyMargin = -(obj.rate / fundamentalValue - 1).toFixed(2);
+   //    const Fv = fundamentalValue.toFixed(2);
+   //    if (safetyMargin < 0) return { safetyMargin: "N/A", Fv };
+   //    return { safetyMargin, Fv };
+   // }
+
+   // const safetyValues = calcSafetyMargin(obj, stockData.anualTargetReturn);
 
    async function handleDelete(id: string | undefined) {
       if (!id) return;
@@ -101,7 +104,7 @@ export default function WatchListPanel({
          {[...watchList]
             .sort((a, b) => a.name.localeCompare(b.name))
             .map((obj, index) => {
-               const safetyValues = calcSafetyMargin(obj);
+               const safetyValues = calcSafetyMargin(obj, stockData.anualTargetReturn);
                return (
                   <div key={index} className="flex flex-col items-center">
                      <div className="relative grid grid-cols-1 sm:grid-cols-custom-sm lg:grid-cols-custom-lg md:grid-cols-custom-tablet lg:w-[60vw] w-[95vw] sm:justify-center gap-3 lg:gap-0 bg-white mt-3 p-4 rounded-xl [&>div>input:first-child]:text-sm [&>div>p:first-child]:text-sm [&>div>input:first-child]:font-bold [&>div>p:first-child]:font-bold">

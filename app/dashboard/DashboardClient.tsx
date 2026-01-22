@@ -11,6 +11,7 @@ import { EconomicsType } from "@/types/types";
 import { getStockPortfolio } from "@/services/dashboard";
 import { getAllPortfolios } from "@/services/dashboard";
 import { useStockContext } from "@/app/context/StockContext";
+import SafetyOverview from "@/components/SafetyOverview";
 
 export default function DashboardClient() {
    const { stockData, setStockData, showAddWatchlist, setShowAddWatchlist } = useStockContext();
@@ -53,34 +54,35 @@ export default function DashboardClient() {
       getData();
    }, []);
 
-   console.log({portfolioNames, stockData});
+   console.log({ portfolioNames, stockData });
 
    return (
       <>
          <div className="relative flex-1 bg-cover bg-center h-[100vh] bg-[url('/images/feature-bg.png')]">
             <section className="absolute top-28 left-5 right-5">
-               <Economics
-                  economics={economics}
-                  setEconomics={setEconomics}
-                  targetReturn={targetReturn}
-                  activeStock={stockData?.name || ""}
-                  setStockData={setStockData}
-               />
-               <div className="hidden md:block">
-                  <AddStock setStockData={setStockData} stockData={stockData} />
+               <div className="flex justify-center items-start gap-5">
+                  {/* Left side */}
+                  <div className="flex flex-col gap-5 flex-1">
+                     <Economics economics={economics} setEconomics={setEconomics} targetReturn={targetReturn} activeStock={stockData?.name || ""} setStockData={setStockData} />
+                     <AddWatchList portfolioNames={portfolioNames} setPortfolioNames={setPortfolioNames} setStockData={setStockData} />
+                  </div>
+
+                  {/* Center - Safety Overview */}
+                  {stockData?.watchList && stockData.watchList.length > 0 && (
+                     <div className="flex justify-center flex-1">
+                        <SafetyOverview stockData={stockData} />
+                     </div>
+                  )}
+
+                  {/* Right side */}
+                  <div className="hidden md:block flex-1">
+                     <AddStock setStockData={setStockData} stockData={stockData} />
+                  </div>
                </div>
-               <AddWatchList
-                  portfolioNames={portfolioNames}
-                  setPortfolioNames={setPortfolioNames}
-                  setStockData={setStockData}
-               />
             </section>
             {showAddWatchlist && (
                <div className="absolute top-0 left-0 right-0 flex justify-center items-center md:hidden h-[90vh] bg-white">
-                  <span
-                     onClick={() => setShowAddWatchlist(false)}
-                     className="absolute top-28 right-5 text-2xl cursor-pointer"
-                  >
+                  <span onClick={() => setShowAddWatchlist(false)} className="absolute top-28 right-5 text-2xl cursor-pointer">
                      x
                   </span>
                   <AddStock setStockData={setStockData} stockData={stockData} />
@@ -95,17 +97,8 @@ export default function DashboardClient() {
                   <h2 className="text-center text-white text-3xl pt-8">{stockData?.name || ""}</h2>
                   {(() => {
                      const firstWatchName = stockData?.watchList?.[0]?.name ?? "";
-                     return firstWatchName !== "" ? (
-                        <WatchListPanel
-                           watchList={stockData.watchList}
-                           stockData={stockData}
-                           setStockData={setStockData}
-                        />
-                     ) : (
-                        <h2 className="text-xl text-white">{stockData?.active ? "Add your first stock to the watchlist!" : "Add your first Watchlist!"}</h2>
-                     );
+                     return firstWatchName !== "" ? <WatchListPanel watchList={stockData.watchList} stockData={stockData} setStockData={setStockData} /> : <h2 className="text-xl text-white">{stockData?.active ? "Add your first stock to the watchlist!" : "Add your first Watchlist!"}</h2>;
                   })()}
-                 
                </>
             )}
          </div>
