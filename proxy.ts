@@ -1,9 +1,8 @@
-// middleware.ts
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   // Get NextAuth token
   const token = await getToken({ 
     req: request, 
@@ -15,7 +14,7 @@ export async function middleware(request: NextRequest) {
   const isRootPage = request.nextUrl.pathname === "/";
   const isPublicRoute = isRootPage || isAuthPage || isApiRoute;
 
-  console.log("🛡️ Middleware:", {
+  console.log("Proxy:", {
     path: request.nextUrl.pathname,
     hasToken: !!token,
     isPublicRoute
@@ -23,13 +22,13 @@ export async function middleware(request: NextRequest) {
 
   // If trying to access an auth page while logged in, redirect to dashboard
   if (isAuthPage && token) {
-    console.log("✅ Has token, redirecting to dashboard");
+    console.log("Has token, redirecting to dashboard");
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
   // If trying to access a protected route without being logged in
   if (!isPublicRoute && !token) {
-    console.log("❌ No token, redirecting to login");
+    console.log("No token, redirecting to login");
     return NextResponse.redirect(new URL("/auth/login", request.url));
   }
 

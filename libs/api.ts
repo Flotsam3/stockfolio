@@ -1,5 +1,4 @@
 const API_KEY:string = process.env.NEXT_PUBLIC_ALPHA_VANTAGE_KEY || "";
-console.log({API_KEY});
 
 export async function getInflation(){
     try {
