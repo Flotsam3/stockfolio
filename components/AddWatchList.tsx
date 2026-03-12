@@ -49,12 +49,18 @@ export default function AddWatchList({portfolioNames, setPortfolioNames,  setSto
         setPortfolioNames(response);
     }
 
+    function getAcronym(title:string):string{
+        const acronym = title.split(" ").map(str => str[0].toUpperCase()).splice(0, 1).join("");
+        
+        return acronym;
+    }
+
   return (
     <div className='w-52 bg-[#161616] text-white mt-8 p-5'>
         <div className='flex gap-2'>
             {portfolioNames.map((obj) => (
                 <div key={obj._id} className='flex justify-start mb-2' title={obj.name}>
-                    <span onClick={()=>handleSwitchWatchList(obj._id)} className={`inline-block w-4 h-4 rounded-full cursor-pointer ${obj.active === true ? "bg-yellow-400" : "bg-gray-700"}`}></span>
+                    <span onClick={()=>handleSwitchWatchList(obj._id)} className={`flex justify-center items-center w-4 h-4 italic text-[0.6rem] rounded-full cursor-pointer ${obj.active === true ? "bg-yellow-400" : "bg-gray-700"}`}>{obj.active !== true ? getAcronym(obj.name) : null}</span>
                 </div>
             ))}
         </div>
