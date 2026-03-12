@@ -68,7 +68,7 @@ export default function DashboardClient() {
                   </div>
 
                   {/* Center - Safety Overview */}
-                  {stockData?.watchList && stockData.watchList.length > 0 && (
+                  {stockData?.watchList && stockData.watchList.length > 3 && (
                      <div className="flex justify-center flex-1">
                         <SafetyOverview stockData={stockData} />
                      </div>

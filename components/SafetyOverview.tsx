@@ -53,7 +53,7 @@ export default function SafetyOverview({ stockData }: { stockData: StockData }) 
          {/* Top 3 */}
          <div className="mb-5">
             <div className="flex items-center gap-2 mb-2">
-               <h4 className="font-semibold text-green-600">Top 3 Performers</h4>
+               <h4 className="font-semibold text-green-600">Top Performers</h4>
             </div>
             <div className="space-y-1">
                {top3.map((stock, index) => (
@@ -68,7 +68,7 @@ export default function SafetyOverview({ stockData }: { stockData: StockData }) 
          {/* Bottom 3 */}
          <div>
             <div className="flex items-center gap-2 mb-2">
-               <h4 className="font-semibold text-red-600">Bottom 3 Performers</h4>
+               <h4 className="font-semibold text-red-600">Bottom Performers</h4>
             </div>
             <div className="space-y-1">
                {bottom3.map((stock, index) => (
