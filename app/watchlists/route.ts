@@ -190,15 +190,15 @@ export async function DELETE(request: Request) {
          return Response.json({ msg: "name and stockId are required" }, { status: 400 });
       }
 
-      const portfolio = await StockPortfolio.findOne({ name, userId });
-      if (!portfolio) return Response.json({ msg: "Portfolio not found" }, { status: 404 });
+      const response = await StockPortfolio.findOneAndUpdate(
+         { name, userId },
+         { $pull: { watchList: { _id: stockId } } },
+         { new: true }
+      );
 
-      const index = portfolio.watchList.findIndex((obj: any) => obj._id.toString() === stockId);
-
-      if (index !== -1) {
-         portfolio.watchList.splice(index, 1);
+      if (!response) {
+         return Response.json({ msg: "Portfolio not found" }, { status: 404 });
       }
-      const response = await portfolio.save();
 
       return Response.json(response, { status: 200 });
    } catch (error) {
