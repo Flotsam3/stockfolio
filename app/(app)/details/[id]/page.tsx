@@ -1,34 +1,19 @@
+// app/details/[id]/page.tsx
 "use client";
 
 import Details from "./Details";
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useParams, useSearchParams } from "next/navigation";
 
 export default function DetailsPage() {
   const params = useParams();
-  const [companyName, setCompanyName] = useState<string>("");
+  const searchParams = useSearchParams();
+  
   const id = params.id as string;
+  const name = searchParams.get('name') || "";
 
-  useEffect(() => {
-    // Fetch company name
-    const getCompanyName = async () => {
-      try {
-        const response = await fetch(`/api/company?id=${id}`);
-        const data = await response.json();
-        setCompanyName(data.name || "");
-      } catch (error) {
-        console.error("Error fetching company name:", error);
-      }
-    };
-
-    if (id) {
-      getCompanyName();
-    }
-  }, [id]);
-
-  if (!companyName) {
+  if (!name) {
     return <div className="flex justify-center items-center min-h-screen">Loading...</div>;
   }
 
-  return <Details id={id} name={companyName} />;
+  return <Details id={id} name={name} />;
 }
