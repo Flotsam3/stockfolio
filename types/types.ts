@@ -1,96 +1,101 @@
 export type AddStockType = {
-    name:string,
-    ticker:string,
-    isin:string,
-    country:string,
-    rate:number,
-    dilutedEps: number,
-    growthForecast: number,
-    peRatio:string,
-    peRatioAverage?:number,
-    anualTargetReturn?:number
-    _id?:string,
-    info?: string;
-    updatedAt?: string;
-    createdAt?: string;
-}
+   name: string;
+   ticker: string;
+   isin: string;
+   country: string;
+   rate: number;
+   dilutedEps: number;
+   growthForecast: number;
+   peRatio: string;
+   peRatioAverage?: number;
+   anualTargetReturn?: number;
+   _id?: string;
+   info?: string;
+   owned?: boolean;
+   targetPrice?: number;
+   lastDataRefresh?: Date;
+   updatedAt?: string;
+   createdAt?: string;
+};
 
 export type StockData = {
-    name:string,
-    watchList:[{
-        name:string,
-        ticker:string,
-        isin:string,
-        country:string,
-        rate:number,
-        dilutedEps: number,
-        growthForecast: number,
-        peRatio:string,
-        anualTargetReturn?:number
-    }],
-    anualTargetReturn:number,
-    active:boolean,
-    _id?:string
-}
+   name: string;
+   watchList: [
+      {
+         name: string;
+         ticker: string;
+         isin: string;
+         country: string;
+         rate: number;
+         dilutedEps: number;
+         growthForecast: number;
+         peRatio: string;
+         anualTargetReturn?: number;
+      },
+   ];
+   anualTargetReturn: number;
+   active: boolean;
+   _id?: string;
+};
 
 export type EconomicEntry = {
-    value: number | string;
-    date?: Date;
-}
+   value: number | string;
+   date?: Date;
+};
 
 export type EconomicsType = {
-    inflation: EconomicEntry[];
-    cpi: EconomicEntry[];
-    unemployment: EconomicEntry[];
-    interest: EconomicEntry[];
-    _id?: string;
-}
+   inflation: EconomicEntry[];
+   cpi: EconomicEntry[];
+   unemployment: EconomicEntry[];
+   interest: EconomicEntry[];
+   _id?: string;
+};
 
 type ProfitabilityRecord = {
-    grossProfit: number;
-    netIncome: number;
-    operatingIncome: number;
-    year: string;
-    month?: string;  // Optional for quarterly data
-  };
-  
+   grossProfit: number;
+   netIncome: number;
+   operatingIncome: number;
+   year: string;
+   month?: string; // Optional for quarterly data
+};
+
 export type Profitability = {
-    annual: ProfitabilityRecord[];
-    quarterly: ProfitabilityRecord[];
-  };
+   annual: ProfitabilityRecord[];
+   quarterly: ProfitabilityRecord[];
+};
 
 type FinancialMetric = {
-    value: number | string;
-    year: string;
-    month?: string;  // Optional for quarterly data
-  };
-  
+   value: number | string;
+   year: string;
+   month?: string; // Optional for quarterly data
+};
+
 export type EfficiencyAndLeverage = {
-    ebitdaAnnual: FinancialMetric[];
-    ebitdaQuarterly: FinancialMetric[];
-    debtToEquityAnnual: FinancialMetric[];
-    debtToEquityQuarterly: FinancialMetric[];
-  };
+   ebitdaAnnual: FinancialMetric[];
+   ebitdaQuarterly: FinancialMetric[];
+   debtToEquityAnnual: FinancialMetric[];
+   debtToEquityQuarterly: FinancialMetric[];
+};
 
 export type Liquidity = {
-    currentRatioAnnual: FinancialMetric[];
-    currentRatioQuarterly: FinancialMetric[];
-    cashFlowAnnual: FinancialMetric[];
-    cashFlowQuarterly: FinancialMetric[];
-  };
+   currentRatioAnnual: FinancialMetric[];
+   currentRatioQuarterly: FinancialMetric[];
+   cashFlowAnnual: FinancialMetric[];
+   cashFlowQuarterly: FinancialMetric[];
+};
 
 type ValuationMetric = {
-    value: string;  // EPS and PE Ratio might use string for non-numeric values
-    year: string;
-    month?: string;
-  };
-  
+   value: string; // EPS and PE Ratio might use string for non-numeric values
+   year: string;
+   month?: string;
+};
+
 export type Valuation = {
-    epsAnnual: ValuationMetric[];
-    epsQuarterly: ValuationMetric[];
-    peRatioAnnual: ValuationMetric[];
-    peRatioQuarterly: ValuationMetric[];
-  };
+   epsAnnual: ValuationMetric[];
+   epsQuarterly: ValuationMetric[];
+   peRatioAnnual: ValuationMetric[];
+   peRatioQuarterly: ValuationMetric[];
+};
 
 /* 
 {

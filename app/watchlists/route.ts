@@ -85,7 +85,7 @@ export async function PUT(request: Request) {
 
       if (peRatios.length > 0) {
          const average = (
-            peRatios.reduce((acc: string, curr: string) => acc + curr, 0) / peRatios.length
+            peRatios.reduce((acc: number, curr: number) => acc + curr, 0) / peRatios.length
          ).toFixed(2);
          body.payload.peRatioAverage = average;
       } else {
@@ -123,7 +123,7 @@ export async function PATCH(request: Request) {
 
       if (peRatios.length > 0) {
          const average = (
-            peRatios.reduce((acc: string, curr: string) => acc + curr, 0) / peRatios.length
+            peRatios.reduce((acc: number, curr: number) => acc + curr, 0) / peRatios.length
          ).toFixed(2);
          body.payload.peRatioAverage = average;
       } else {
@@ -132,22 +132,36 @@ export async function PATCH(request: Request) {
 
       console.log("payload", body.payload);
 
+      // Build the $set object dynamically to include all fields
+      const updateFields: any = {
+         "watchList.$.name": body.payload.name,
+         "watchList.$.ticker": body.payload.ticker,
+         "watchList.$.isin": body.payload.isin,
+         "watchList.$.country": body.payload.country,
+         "watchList.$.rate": body.payload.rate,
+         "watchList.$.dilutedEps": body.payload.dilutedEps,
+         "watchList.$.growthForecast": body.payload.growthForecast,
+         "watchList.$.peRatio": body.payload.peRatio,
+         "watchList.$.peRatioAverage": body.payload.peRatioAverage,
+         "watchList.$.info": body.payload.info ?? "",
+      };
+
+      // Add new fields if they exist in payload
+      if (body.payload.hasOwnProperty('owned')) {
+         updateFields["watchList.$.owned"] = body.payload.owned;
+      }
+      
+      if (body.payload.hasOwnProperty('targetPrice')) {
+         updateFields["watchList.$.targetPrice"] = body.payload.targetPrice;
+      }
+      
+      if (body.payload.lastDataRefresh) {
+         updateFields["watchList.$.lastDataRefresh"] = body.payload.lastDataRefresh;
+      }
+
       const response = await StockPortfolio.findOneAndUpdate(
          { name: body.name, userId, "watchList._id": body.payload._id },
-         {
-            $set: {
-               "watchList.$.name": body.payload.name,
-               "watchList.$.ticker": body.payload.ticker,
-               "watchList.$.isin": body.payload.isin,
-               "watchList.$.country": body.payload.country,
-               "watchList.$.rate": body.payload.rate,
-               "watchList.$.dilutedEps": body.payload.dilutedEps,
-               "watchList.$.growthForecast": body.payload.growthForecast,
-               "watchList.$.peRatio": body.payload.peRatio,
-               "watchList.$.peRatioAverage": body.payload.peRatioAverage,
-               "watchList.$.info": body.payload.info ?? "",
-            },
-         },
+         { $set: updateFields },
          { new: true }
       );
 

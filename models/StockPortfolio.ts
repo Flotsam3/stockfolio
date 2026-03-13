@@ -1,5 +1,4 @@
 import {Schema, model, models} from "mongoose";
-import { unique } from "next/dist/build/utils";
 
 const watchListSchema = new Schema({
    name: {
@@ -9,7 +8,6 @@ const watchListSchema = new Schema({
    ticker: {
       type: String,
       required: [true, "A ticker code is required!"],
-      // removed unique constraint to avoid global unique index on embedded field
    },
    isin: {
       type: String
@@ -38,6 +36,17 @@ const watchListSchema = new Schema({
    info: {
       type: String,
       default: ""
+   },
+   owned: {
+      type: Boolean,
+      default: false
+   },
+   targetPrice: {
+      type: Number,
+      default: 0
+   },
+   lastDataRefresh: {
+      type: Date
    }
 }, {timestamps:true});
   
@@ -63,7 +72,6 @@ const stockSchema = new Schema({
    }
 }, {timestamps:true});
 
-// Ensure portfolio names are unique per user
 stockSchema.index({ userId: 1, name: 1 }, { unique: true });
 
 const StockPortfolio = models.StockPortfolio || model("StockPortfolio", stockSchema);
