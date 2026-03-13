@@ -62,12 +62,11 @@ export default function WatchListPanel({ watchList, stockData, setStockData }: {
          setInfoModal(false);
          const updateData = await getStockPortfolio();
          if (updateData && updateData._id) setStockData(updateData);
-      } catch (e) {
-         // handle error
+      } catch (error) {
+        console.log(error);
       }
    }
 
-   // NEW: Toggle ownership
    async function handleToggleOwned(obj: AddStockType) {
       try {
          await updateWatchList({ ...obj, owned: !obj.owned }, stockData.name);
