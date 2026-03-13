@@ -13,8 +13,8 @@ import { processValuation } from '../../fundamentals/processValuation';
 import { Profitability, EfficiencyAndLeverage, Liquidity, Valuation } from '@/types/types';
 import AnalysisInfo from '@/components/AnalysisInfo';
 
-const API_KEY: string = process.env.NEXT_PUBLIC_ALPHA_VANTAGE_KEY || "";
-const BASE_URL: string = process.env.NEXT_PUBLIC_BASE_URL || "";
+// const API_KEY: string = process.env.NEXT_PUBLIC_ALPHA_VANTAGE_KEY || "";
+// const BASE_URL: string = process.env.NEXT_PUBLIC_BASE_URL || "";
 
 export default function Fundamentals() {
   const { stockData } = useStockContext();
