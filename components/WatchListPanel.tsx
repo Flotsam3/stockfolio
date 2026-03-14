@@ -10,6 +10,7 @@ import Link from "next/link";
 import { fetchPERatios } from "@/services/stockanalysis";
 import { calcSafetyMargin } from "@/utils/stockCalculations";
 import { Star, Lightbulb } from "lucide-react";
+import StockTooltip from "./StockTooltip";
 import "./WatchListPanel.css";
 
 export default function WatchListPanel({ watchList, stockData, setStockData }: { watchList: AddStockType[]; stockData: StockData; setStockData: Dispatch<SetStateAction<StockData>> }) {
@@ -63,7 +64,7 @@ export default function WatchListPanel({ watchList, stockData, setStockData }: {
          const updateData = await getStockPortfolio();
          if (updateData && updateData._id) setStockData(updateData);
       } catch (error) {
-        console.log(error);
+         console.log(error);
       }
    }
 
@@ -101,6 +102,19 @@ export default function WatchListPanel({ watchList, stockData, setStockData }: {
       return "text-red-500"; // More than 1 month
    }
 
+   function getTargetPriceBorderColor(rate: number, targetPrice?: number): string {
+      if (!targetPrice || targetPrice === 0) return "border-gray-300"; // Default if no target
+
+      if (rate >= targetPrice) return "border-green-600 border-4"; // At or above target
+
+      const percentBelow = ((targetPrice - rate) / targetPrice) * 100;
+
+      if (percentBelow <= 10) return "border-green-600 border-4";
+      if (percentBelow <= 30) return "border-yellow-500 border-4";
+      if (percentBelow <= 50) return "border-orange-500 border-4";
+      return "border-red-500 border-4";
+   }
+
    return (
       <>
          {[...watchList]
@@ -109,7 +123,7 @@ export default function WatchListPanel({ watchList, stockData, setStockData }: {
                const safetyValues = calcSafetyMargin(obj, stockData.anualTargetReturn);
                return (
                   <div key={index} className="flex flex-col items-center">
-                     <div className="relative grid grid-cols-1 sm:grid-cols-custom-sm lg:grid-cols-custom-lg md:grid-cols-custom-tablet lg:w-[60vw] w-[95vw] sm:justify-center gap-3 lg:gap-0 bg-white mt-3 p-4 rounded-xl [&>div>input:first-child]:text-sm [&>div>p:first-child]:text-sm [&>div>input:first-child]:font-bold [&>div>p:first-child]:font-bold">
+                     <div className={`relative grid grid-cols-1 sm:grid-cols-custom-sm lg:grid-cols-custom-lg md:grid-cols-custom-tablet lg:w-[60vw] w-[95vw] sm:justify-center gap-3 lg:gap-0 bg-white mt-3 p-4 rounded-xl ${getTargetPriceBorderColor(obj.rate, obj.targetPrice)} [&>div>input:first-child]:text-sm [&>div>p:first-child]:text-sm [&>div>input:first-child]:font-bold [&>div>p:first-child]:font-bold`}>
                         {edit === obj.isin ? (
                            <>
                               <div className="flex flex-col items-center sm:col-span-6 lg:col-span-1 [&>input]:w-[90%] [&>input]:bg-slate-200 [&>input]:rounded-md [&>input]:p-1 [&>input]:outline-none">
@@ -135,14 +149,7 @@ export default function WatchListPanel({ watchList, stockData, setStockData }: {
                                           <Lightbulb size={18} className={getLightbulbColor(obj.lastDataRefresh)} />
                                        </button>
                                        {/* Tooltip on hover */}
-                                       <div id={`tooltip-${obj.isin}`} style={{ display: "none" }} className="absolute left-6 top-0 z-50 bg-white text-gray-800 border border-gray-300 rounded shadow-lg p-2 text-xs w-64 max-w-xs">
-                                          {/* CreatedAt */}
-                                          {obj.createdAt && <div className="mb-1 text-xs text-gray-500">Created: {new Date(obj.createdAt).toLocaleString()}</div>}
-                                          {/* UpdatedAt if different */}
-                                          {obj.updatedAt && obj.updatedAt !== obj.createdAt && <div className="mb-2 text-xs text-gray-500">Updated: {new Date(obj.updatedAt).toLocaleString()}</div>}
-                                          {/* Info content */}
-                                          <div>{obj.info ? obj.info : <span className="italic text-gray-400">No info</span>}</div>
-                                       </div>
+                                       <StockTooltip stock={obj} />
                                     </div>
                                  </div>
                               </div>
@@ -194,9 +201,10 @@ export default function WatchListPanel({ watchList, stockData, setStockData }: {
                                              console.log({ updateResult });
                                              const updateData = await getStockPortfolio();
                                              setStockData(updateData);
-                                             setLoadingId(null);
                                           } catch (err) {
                                              console.error("Error while updating PE ratios", err);
+                                          } finally {
+                                             setLoadingId(null);
                                           }
                                        }}
                                     >
@@ -226,14 +234,7 @@ export default function WatchListPanel({ watchList, stockData, setStockData }: {
                                           <Lightbulb size={18} className={getLightbulbColor(obj.lastDataRefresh)} />
                                        </button>
                                        {/* Tooltip on hover */}
-                                       <div id={`tooltip-${obj.isin}`} style={{ display: "none" }} className="absolute left-6 top-0 z-50 bg-white text-gray-800 border border-gray-300 rounded shadow-lg p-2 text-xs w-64 max-w-xs">
-                                          {/* CreatedAt */}
-                                          {obj.createdAt && <div className="mb-1 text-xs text-gray-500">Created: {new Date(obj.createdAt).toLocaleString()}</div>}
-                                          {/* LastDataRefresh - NEW */}
-                                          {obj.lastDataRefresh && <div className="mb-2 text-xs text-gray-500">Last Refresh: {new Date(obj.lastDataRefresh).toLocaleString()}</div>}
-                                          {/* Info content */}
-                                          <div>{obj.info ? obj.info : <span className="italic text-gray-400">No info</span>}</div>
-                                       </div>
+                                       <StockTooltip stock={obj} />
                                     </div>
                                     {/* NEW: Star toggle */}
                                     <button type="button" onClick={() => handleToggleOwned(obj)} className="cursor-pointer" title={obj.owned ? "Owned" : "Not owned"}>

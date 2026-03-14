@@ -6,19 +6,22 @@ export async function GET(request: NextRequest) {
       const { searchParams } = new URL(request.url);
       const ticker = searchParams.get("ticker") || "pypl";
 
+      console.log("Fetching data for ticker:", ticker);
+
       // Parallel fetch for all three pages
-      const [ratiosHtml, financialsHtml, statsHtml] = await Promise.all([
-         fetch(`https://stockanalysis.com/stocks/${ticker}/financials/ratios/`).then((res) =>
-            res.text()
-         ),
-         fetch(`https://stockanalysis.com/stocks/${ticker}/financials/`).then((res) => res.text()),
-         fetch(`https://stockanalysis.com/stocks/${ticker}/statistics/`).then((res) => res.text()),
-      ]);
+      const [ratiosHtml, financialsHtml, statsHtml] = await Promise.all([fetch(`https://stockanalysis.com/stocks/${ticker}/financials/ratios/`).then((res) => res.text()), fetch(`https://stockanalysis.com/stocks/${ticker}/financials/`).then((res) => res.text()), fetch(`https://stockanalysis.com/stocks/${ticker}/statistics/`).then((res) => res.text())]);
 
       // Parse DOMs
       const ratiosDoc = new JSDOM(ratiosHtml).window.document;
       const financialsDoc = new JSDOM(financialsHtml).window.document;
       const statsDoc = new JSDOM(statsHtml).window.document;
+
+      // Check if page returned 404 or error
+      const notFound = ratiosDoc.querySelector("h1")?.textContent?.includes("404") || ratiosDoc.querySelector("h1")?.textContent?.includes("not found");
+
+      if (notFound) {
+         return Response.json({ error: `Stock ticker "${ticker}" not found on stockanalysis.com. This service only supports US-listed stocks.` }, { status: 404 });
+      }
 
       // Extract PE Ratios from ratios page
       let peRatios: string[] = [];
@@ -34,15 +37,11 @@ export async function GET(request: NextRequest) {
 
       // Extract closing or real-time price
       let realTimePrice: string | null = null;
-      const priceEl =
-         ratiosDoc.querySelector(
-            "div.text-4xl.font-bold.transition-colors.duration-300.inline-block"
-         ) ||
-         ratiosDoc.querySelector("div.text-4xl.font-bold.transition-colors.duration-300.block");
+      const priceEl = ratiosDoc.querySelector("div.text-4xl.font-bold.transition-colors.duration-300.inline-block") || ratiosDoc.querySelector("div.text-4xl.font-bold.transition-colors.duration-300.block");
 
       realTimePrice = priceEl?.textContent?.trim() || null;
 
-      // Extract after-hours price if available (more flexible)
+      // Extract after-hours price if available
       let afterHoursPrice: string | null = null;
       const afterHoursEl = ratiosDoc.querySelector("div.block.font-semibold.leading-5.text-faded");
       afterHoursPrice = afterHoursEl?.textContent?.trim() || null;
@@ -71,12 +70,15 @@ export async function GET(request: NextRequest) {
       // If realTimePrice is not available, use afterHoursPrice
       realTimePrice = realTimePrice || afterHoursPrice;
 
+      // Check if we got meaningful data
+      if (!realTimePrice && peRatios.length === 0 && !epsDiluted) {
+         return Response.json({ error: `No data available for ticker "${ticker}". stockanalysis.com may not support this stock.` }, { status: 404 });
+      }
+
       // Return all data
-      return Response.json(
-         { ticker, realTimePrice, peRatios, epsDiluted, epsGrowth5Y },
-         { status: 200 }
-      );
+      return Response.json({ ticker, realTimePrice, peRatios, epsDiluted, epsGrowth5Y }, { status: 200 });
    } catch (err: any) {
+      console.error("Error in updateWatchlists:", err);
       return Response.json({ error: err.message }, { status: 500 });
    }
 }
