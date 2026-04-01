@@ -3,7 +3,7 @@ export async function fetchPERatios(ticker: string): Promise<{ ticker: string; p
    const timeout = setTimeout(() => controller.abort(), 10000);
 
    try {
-      const response = await fetch(`/updateWatchlists?ticker=${ticker}`, {
+      const response = await fetch(`/api/updateWatchlists?ticker=${ticker}`, {
          signal: controller.signal,
       });
 

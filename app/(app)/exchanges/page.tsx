@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import React from 'react';
-import data from '@/app/data/exchangeData';
+import data from '@/data/exchangeData';
 import { DateTime } from 'luxon';
 
 function isMarketOpen(openTime: string, closingTime: string, timeZone: string, names: string) {

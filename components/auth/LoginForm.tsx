@@ -19,40 +19,38 @@ export default function LoginForm() {
 
    const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
 
-   // ❌ REMOVE ALL REDIRECT LOGIC - Let NextAuth + Dashboard handle it
-
    async function submit(e: React.FormEvent) {
-      console.log("🚨 SUBMIT FUNCTION CALLED!");
+      console.log("SUBMIT FUNCTION CALLED!");
       e.preventDefault();
       setIsLoading(true);
       setMsg("");
 
       try {
-         console.log("🔑 Starting login with:", email);
+         console.log("Starting login with:", email);
 
          const result = await signIn("credentials", {
             email,
             password,
-            callbackUrl: "/dashboard", // ✅ ADD THIS
+            callbackUrl: "/dashboard",
             redirect: false,
          });
 
-         console.log("📊 FULL result object:", result);
+         console.log("FULL result object:", result);
 
          if (result?.error) {
-            console.error("❌ Has error:", result.error);
+            console.error("Has error:", result.error);
             setMsg(result.error);
             setIsLoading(false);
          } else if (result?.ok) {
-            console.log("✅ Result is OK! Redirecting to dashboard...");
+            console.log("Result is OK! Redirecting to dashboard...");
             window.location.href = "/dashboard";
          } else {
-            console.log("⚠️ Unexpected result");
+            console.log("Unexpected result");
             setMsg("Something went wrong");
             setIsLoading(false);
          }
       } catch (error) {
-         console.error("💥 Exception:", error);
+         console.error("Exception:", error);
          setMsg(String(error));
          setIsLoading(false);
       }

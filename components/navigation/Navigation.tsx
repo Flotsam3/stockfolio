@@ -2,7 +2,7 @@
 
 import React, {useState} from 'react';
 import Link from "next/link";
-import { useStockContext } from '@/app/context/StockContext';
+import { useStockContext } from '@/context/StockContext';
 import { signOut } from "next-auth/react";
 
 export default function Navigation() {

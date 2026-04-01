@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { financialMetrics } from "@/app/data/analysisInfoData";
+import { financialMetrics } from "@/data/analysisInfoData";
 
 export default function AnalysisInfoItem() {
    const [expand, setExpand] = useState<boolean | number>(false);

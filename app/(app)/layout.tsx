@@ -1,7 +1,7 @@
 import React from 'react';
 import "../globals.css";
-import Navigation from "@/components/Navigation";
-import { StockProvider } from "../context/StockContext";
+import Navigation from "@/components/navigation/Navigation";
+import { StockProvider } from "../../context/StockContext";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (

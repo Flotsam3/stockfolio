@@ -2,16 +2,16 @@
 
 import React, { useState } from 'react';
 import { getIncomeStatement, getBalanceSheet, getCashFlow, getMonthlyStock } from '@/libs/api';
-import { useStockContext } from '@/app/context/StockContext';
+import { useStockContext } from '@/context/StockContext';
 import toast, { Toaster } from 'react-hot-toast';
 import { getCompany, createCompany, updateCompany } from '@/services/company';
-import AnalysisSection from '@/components/AnalysisSection';
-import { processEfficiencyAndLeverage } from '../../fundamentals/processEfficiencyAndLeverage';
-import { processLiquidity } from '../../fundamentals/processLiquidity';
-import { processProfitability } from '../../fundamentals/processProfitability';
-import { processValuation } from '../../fundamentals/processValuation';
+import AnalysisSection from '@/components/analysis/AnalysisSection';
+import { processEfficiencyAndLeverage } from '../../../libs/fundamentals/processEfficiencyAndLeverage';
+import { processLiquidity } from '../../../libs/fundamentals/processLiquidity';
+import { processProfitability } from '../../../libs/fundamentals/processProfitability';
+import { processValuation } from '../../../libs/fundamentals/processValuation';
 import { Profitability, EfficiencyAndLeverage, Liquidity, Valuation } from '@/types/types';
-import AnalysisInfo from '@/components/AnalysisInfo';
+import AnalysisInfo from '@/components/analysis/AnalysisInfo';
 
 // const API_KEY: string = process.env.NEXT_PUBLIC_ALPHA_VANTAGE_KEY || "";
 // const BASE_URL: string = process.env.NEXT_PUBLIC_BASE_URL || "";

@@ -10,7 +10,7 @@ import Link from "next/link";
 import { fetchPERatios } from "@/services/stockanalysis";
 import { calcSafetyMargin } from "@/utils/stockCalculations";
 import { Star, Lightbulb } from "lucide-react";
-import StockTooltip from "./StockTooltip";
+import StockTooltip from "@/components/stock/StockTooltip";
 import "./WatchListPanel.css";
 
 export default function WatchListPanel({ watchList, stockData, setStockData }: { watchList: AddStockType[]; stockData: StockData; setStockData: Dispatch<SetStateAction<StockData>> }) {

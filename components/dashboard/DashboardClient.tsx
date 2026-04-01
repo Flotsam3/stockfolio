@@ -1,17 +1,17 @@
 "use client";
 
 import Image from "next/image";
-import Economics from "@/components/Economics";
-import AddStock from "@/components/AddStock";
-import WatchListPanel from "@/components/WatchListPanel";
-import AddWatchList from "@/components/AddWatchList";
+import Economics from "@/components/economics/Economics";
+import AddStock from "@/components/stock/AddStock";
+import WatchListPanel from "@/components/watchlist/WatchListPanel";
+import AddWatchList from "@/components/watchlist/AddWatchList";
 import { StockData } from "@/types/types";
 import { useEffect, useState } from "react";
 import { EconomicsType } from "@/types/types";
 import { getStockPortfolio } from "@/services/dashboard";
 import { getAllPortfolios } from "@/services/dashboard";
-import { useStockContext } from "@/app/context/StockContext";
-import SafetyOverview from "@/components/SafetyOverview";
+import { useStockContext } from "@/context/StockContext";
+import SafetyOverview from "@/components/stock/SafetyOverview";
 
 export default function DashboardClient() {
    const { stockData, setStockData, showAddWatchlist, setShowAddWatchlist } = useStockContext();

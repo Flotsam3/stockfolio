@@ -5,7 +5,7 @@ import { AddStockType } from "@/types/types";
 
 export async function postStockPortfolio(payload:string){
     try {
-        const response = await fetch(`/watchlists`, {
+        const response = await fetch(`/api/watchlists`, {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(payload)
@@ -21,7 +21,7 @@ export async function postStockPortfolio(payload:string){
 
 export async function getStockPortfolio(){
     try {
-        const response = await fetch(`/watchlists`);
+        const response = await fetch(`/api/watchlists`);
         const data = await response.json();
         console.log(data);
         return data;
@@ -32,7 +32,7 @@ export async function getStockPortfolio(){
 
 export async function postNewWatchList(payload:AddStockType, name:string, targetReturn:Number){
     try {
-        const response = await fetch(`/watchlists`, {
+        const response = await fetch(`/api/watchlists`, {
             method: "PUT",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({payload, name, targetReturn})
@@ -47,7 +47,7 @@ export async function postNewWatchList(payload:AddStockType, name:string, target
 
 export async function switchWatchList(id:string){
     try {
-        const response = await fetch(`/watchlists/switch?id=${id}`, {
+        const response = await fetch(`/api/watchlists/switch?id=${id}`, {
             method: "PATCH"
         });
         const data = await response.json();
@@ -60,7 +60,7 @@ export async function switchWatchList(id:string){
 
 export async function updateWatchList(payload:AddStockType, name:string){
     try {
-        const response = await fetch(`/watchlists`, {
+        const response = await fetch(`/api/watchlists`, {
             method: "PATCH",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({payload, name})
@@ -75,7 +75,7 @@ export async function updateWatchList(payload:AddStockType, name:string){
 
 export async function getAllPortfolios(){
     try {
-        const response = await fetch(`/portfolios`);
+        const response = await fetch(`/api/portfolios`);
         const data = await response.json();
         console.log(data);
         return data;
@@ -86,7 +86,7 @@ export async function getAllPortfolios(){
 
 export async function updateAnualTargetReturn(name:string, targetReturn:number){
     try {
-        const response = await fetch(`/portfolios`, {
+        const response = await fetch(`/api/portfolios`, {
             method: "PATCH",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({name, targetReturn})
@@ -104,7 +104,7 @@ export async function updateAnualTargetReturn(name:string, targetReturn:number){
 
 export async function deleteOneWatchList(name:string, id:string){
     try {
-        const response = await fetch(`/watchlists?name=${name}&stockId=${id}`, {
+        const response = await fetch(`/api/watchlists?name=${name}&stockId=${id}`, {
             method: "DELETE"
         });
         const data = await response.json();

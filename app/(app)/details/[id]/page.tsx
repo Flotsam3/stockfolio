@@ -1,7 +1,7 @@
 // app/details/[id]/page.tsx
 "use client";
 
-import Details from "./Details";
+import Details from "@/components/details/Details";
 import { useParams, useSearchParams } from "next/navigation";
 
 export default function DetailsPage() {
