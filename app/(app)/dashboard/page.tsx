@@ -37,10 +37,5 @@ export default function Dashboard() {
     );
   }
 
-  if (status === "authenticated") {
-    console.log("Authenticated - showing dashboard");
-    return <DashboardClient />;
-  }
-
-  return null;
+   return <DashboardClient />;
 }

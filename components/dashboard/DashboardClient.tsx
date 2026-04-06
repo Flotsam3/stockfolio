@@ -1,15 +1,12 @@
 "use client";
 
-import Image from "next/image";
 import Economics from "@/components/economics/Economics";
 import AddStock from "@/components/stock/AddStock";
-import WatchListPanel from "@/components/watchlist/WatchListPanel";
+import WatchListSection from "./WatchListSection";
 import AddWatchList from "@/components/watchlist/AddWatchList";
 import { StockData } from "@/types/types";
-import { useEffect, useState } from "react";
+import { useState, Suspense } from "react";
 import { EconomicsType } from "@/types/types";
-import { getStockPortfolio } from "@/services/dashboard";
-import { getAllPortfolios } from "@/services/dashboard";
 import { useStockContext } from "@/context/StockContext";
 import SafetyOverview from "@/components/stock/SafetyOverview";
 
@@ -25,34 +22,6 @@ export default function DashboardClient() {
 
    const [portfolioNames, setPortfolioNames] = useState<StockData[]>([]);
    const [targetReturn, setTargetReturn] = useState(12);
-   const [isLoading, setIsLoading] = useState(false);
-
-   useEffect(() => {
-      async function getData() {
-         try {
-            setIsLoading(true);
-
-            const data = await getStockPortfolio();
-            if (!data) {
-               setIsLoading(false);
-               return console.log("No portfolio yet!");
-            }
-
-            setStockData(data);
-
-            const portfolios = await getAllPortfolios();
-            setIsLoading(false);
-            console.log("fetched portfolios!");
-
-            if (!portfolios) return;
-
-            setPortfolioNames(portfolios);
-         } catch (error) {
-            console.log(error);
-         }
-      }
-      getData();
-   }, []);
 
    console.log({ portfolioNames, stockData });
 
@@ -89,19 +58,7 @@ export default function DashboardClient() {
                </div>
             )}
          </div>
-         <div className=" flex flex-col items-center bg-main-dark pb-7">
-            {isLoading ? (
-               <h2 className="mt-4 text-2xl text-white">Loading data...</h2>
-            ) : (
-               <>
-                  <h2 className="text-center text-white text-3xl pt-8">{stockData?.name || ""}</h2>
-                  {(() => {
-                     const firstWatchName = stockData?.watchList?.[0]?.name ?? "";
-                     return firstWatchName !== "" ? <WatchListPanel watchList={stockData.watchList} stockData={stockData} setStockData={setStockData} /> : <h2 className="text-xl text-white">{stockData?.active ? "Add your first stock to the watchlist!" : "Add your first Watchlist!"}</h2>;
-                  })()}
-               </>
-            )}
-         </div>
+         <WatchListSection setStockData={setStockData} setPortfolioNames={setPortfolioNames} />
       </>
    );
 }
