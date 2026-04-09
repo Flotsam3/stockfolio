@@ -11,7 +11,7 @@ import { EconomicsType } from "@/types/types.js";
 import { EconomicEntry } from "@/types/types.js";
 import Cookies from "js-cookie";
 
-export async function prepareEconomics(setEconomics: Dispatch<SetStateAction<EconomicsType>>) {
+export async function prepareEconomics(setEconomics: Dispatch<SetStateAction<EconomicsType>>) {   
    try {
       const { response } = await getEconomics();
       setEconomics(response[0]);
@@ -56,11 +56,31 @@ export async function prepareEconomics(setEconomics: Dispatch<SetStateAction<Eco
 }
 
 async function processUpdateData() {
+   const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
    try {
+      console.log("Fetching inflation...");
       const inflation = await getInflation();
+      
+      await delay(1100); // Wait 1.1 seconds (Alpha Vantage limits to 1 request per second)
+      console.log("Fetching CPI...");
       const cpi = await getCpi();
+      
+      await delay(1100);
+      console.log("Fetching interest...");
       const interest = await getInterest();
+      
+      await delay(1100);
+      console.log("Fetching unemployment...");
       const unemployment = await getUnemployment();
+
+       // ADD THESE DEBUG LOGS
+      console.log("=== API Response Debug ===");
+      console.log("inflation:", JSON.stringify(inflation, null, 2));
+      console.log("cpi:", JSON.stringify(cpi, null, 2));
+      console.log("interest:", JSON.stringify(interest, null, 2));
+      console.log("unemployment:", JSON.stringify(unemployment, null, 2));
+      console.log("========================");
 
       if (!Array.isArray(inflation?.data)) throw new Error("Invalid inflation data format");
       if (!Array.isArray(cpi?.data)) throw new Error("Invalid CPI data format");
