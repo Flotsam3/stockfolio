@@ -23,7 +23,7 @@ Built with modern web technologies, Stockfolio delivers a seamless and fast user
 - **TypeScript** – Type safety across the codebase  
 - **Tailwind CSS** – Utility-first styling  
 - **MongoDB** – NoSQL database for storing user data & financial metrics  
-- **Vite** – Lightning-fast dev environment setup (with Next.js)  
+- **Vite** – Fast dev environment setup (with Next.js)  
 - **Alpha Vantage API** – Real-time and historical financial data
 
 ---
