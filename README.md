@@ -1,4 +1,4 @@
-# 📈 Stockfolio
+# Stockfolio
 
 **Stockfolio** is a lightweight, responsive web tool designed to support smarter investment decisions. It allows users to create customized stock watchlists, analyze trends, and gain actionable insights using technical and fundamental financial metrics.
 
@@ -6,17 +6,17 @@ Built with modern web technologies, Stockfolio delivers a seamless and fast user
 
 ---
 
-## 🚀 Features
+## Features
 
-- 🔍 **Custom Watchlists** – Track selected stocks in a personalized view  
-- 📊 **Technical Analysis** – Trend, momentum, and volatility breakdowns  
-- 🧮 **Fundamental Data** – Access to earnings, profit, and other key financial indicators  
-- 🌍 **Global Market Overview** – Snapshot of major stock exchanges  
-- ⚡️ **Responsive UI** – Fast-loading, mobile-friendly interface
+- **Custom Watchlists** – Track selected stocks in a personalized view  
+- **Technical Analysis** – Trend, momentum, and volatility breakdowns  
+- **Fundamental Data** – Access to earnings, profit, and other key financial indicators  
+- **Global Market Overview** – Snapshot of major stock exchanges  
+- **Responsive UI** – Fast-loading, mobile-friendly interface
 
 ---
 
-## 🛠 Tech Stack
+## Tech Stack
 
 - **React** – Frontend UI components  
 - **Next.js** – Server-side rendering and routing  
@@ -28,7 +28,7 @@ Built with modern web technologies, Stockfolio delivers a seamless and fast user
 
 ---
 
-## 🔑 Environment Variables
+## Environment Variables
 
 Before running the app, you’ll need to set up a `.env.local` file in the root directory with the following variables:
 
@@ -39,7 +39,7 @@ NEXT_PUBLIC_ALPHA_VANTAGE_KEY=your_alpha_vantage_api_key
 NEXT_PUBLIC_BASE_URL=http://localhost:3000
 ```
 
-### 📘 Alpha Vantage API
+### Alpha Vantage API
 
 Stockfolio uses the [Alpha Vantage API](https://www.alphavantage.co/) throughout the app to fetch real-time stock data, historical prices, technical indicators, and more.
 
@@ -51,7 +51,7 @@ To use this app, you’ll need to:
 
 ---
 
-## 🧑‍💻 Getting Started
+## Getting Started
 
 To run the project locally, follow these steps:
 
@@ -86,42 +86,6 @@ Open [http://localhost:3000](http://localhost:3000) in your browser to view the 
 
 ---
 
-## 🗂 Project Structure
-
-```
-/
-├── app/               # Application pages and routing
-├── components/        # Reusable UI components
-├── lib/               # Utility functions and helpers
-├── public/            # Static files
-└── ...                # Additional config and setup
-```
-
----
-
-## 📦 Deployment
-
-The recommended way to deploy Stockfolio is via [Vercel](https://vercel.com), the creators of Next.js.
-
-1. Push your code to GitHub
-2. Connect your repository to Vercel
-3. Add your environment variables in the Vercel dashboard
-4. Deploy 🚀
-
-More info: [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying)
-
----
-
-## 📚 Learn More
-
-- [Next.js Documentation](https://nextjs.org/docs)
-- [React Docs](https://react.dev/)
-- [Tailwind CSS Docs](https://tailwindcss.com/docs)
-- [MongoDB Docs](https://www.mongodb.com/docs/)
-- [Alpha Vantage Docs](https://www.alphavantage.co/documentation/)
-
----
-
-## 📄 License
+## License
 
 This project is licensed under the [MIT License](LICENSE).
