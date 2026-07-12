@@ -1,5 +1,7 @@
 # Stockfolio
 
+![Screenshot](./public/images/docs/screenshot.png)
+
 **Stockfolio** is a lightweight, responsive web tool designed to support smarter investment decisions. It allows users to create customized stock watchlists, analyze trends, and gain actionable insights using technical and fundamental financial metrics.
 
 Built with modern web technologies, Stockfolio delivers a seamless and fast user experience for retail investors, traders, and financial enthusiasts.
