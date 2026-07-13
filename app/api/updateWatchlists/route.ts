@@ -1,6 +1,30 @@
 import { JSDOM } from "jsdom";
 import { NextRequest } from "next/server";
 
+async function fetchFinvizEpsGrowth5Y(ticker: string): Promise<string | null> {
+   const response = await fetch(`https://finviz.com/quote.ashx?t=${encodeURIComponent(ticker)}&p=d`, {
+      headers: {
+         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36",
+         Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+      },
+   });
+
+   if (!response.ok) {
+      console.warn(`Finviz request failed for ${ticker}: ${response.status}`);
+      return null;
+   }
+
+   const doc = new JSDOM(await response.text()).window.document;
+
+   for (const cell of doc.querySelectorAll("td")) {
+      if (cell.textContent?.trim() === "EPS next 5Y") {
+         return cell.nextElementSibling?.textContent?.trim() || null;
+      }
+   }
+
+   return null;
+}
+
 export async function GET(request: NextRequest) {
    try {
       const { searchParams } = new URL(request.url);
@@ -8,8 +32,16 @@ export async function GET(request: NextRequest) {
 
       console.log("Fetching data for ticker:", ticker);
 
-      // Parallel fetch for all three pages
-      const [ratiosHtml, financialsHtml, statsHtml] = await Promise.all([fetch(`https://stockanalysis.com/stocks/${ticker}/financials/ratios/`).then((res) => res.text()), fetch(`https://stockanalysis.com/stocks/${ticker}/financials/`).then((res) => res.text()), fetch(`https://stockanalysis.com/stocks/${ticker}/statistics/`).then((res) => res.text())]);
+      // Parallel fetch for all source pages
+      const [ratiosHtml, financialsHtml, statsHtml, finvizEpsGrowth5Y] = await Promise.all([
+         fetch(`https://stockanalysis.com/stocks/${ticker}/financials/ratios/`).then((res) => res.text()),
+         fetch(`https://stockanalysis.com/stocks/${ticker}/financials/`).then((res) => res.text()),
+         fetch(`https://stockanalysis.com/stocks/${ticker}/statistics/`).then((res) => res.text()),
+         fetchFinvizEpsGrowth5Y(ticker).catch((error) => {
+            console.warn(`Could not fetch EPS next 5Y from Finviz for ${ticker}:`, error);
+            return null;
+         }),
+      ]);
 
       // Parse DOMs
       const ratiosDoc = new JSDOM(ratiosHtml).window.document;
@@ -57,11 +89,11 @@ export async function GET(request: NextRequest) {
          }
       }
 
-      // Extract EPS Growth Forecast (5Y) from statistics page
-      let epsGrowth5Y: string | null = null;
+      // Extract EPS next 5Y from Finviz, with the old StockAnalysis label as a fallback
+      let epsGrowth5Y: string | null = finvizEpsGrowth5Y;
       for (let row of statsDoc.querySelectorAll("tr")) {
          const label = row.querySelector("td")?.textContent?.trim() || "";
-         if (label === "EPS Growth Forecast (5Y)") {
+         if (!epsGrowth5Y && label === "EPS Growth Forecast (5Y)") {
             epsGrowth5Y = row.querySelectorAll("td")[1]?.textContent?.trim() || null;
             break;
          }
