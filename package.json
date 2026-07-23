@@ -1,53 +1,55 @@
 {
-   "name": "stockfolio",
-   "version": "1.1.0",
-   "private": true,
-   "scripts": {
-      "dev": "next dev",
-      "build": "next build",
-      "start": "next start",
-      "lint": "next lint"
-   },
-   "dependencies": {
-      "@auth/mongodb-adapter": "^3.11.1",
-      "@fortawesome/fontawesome-free": "^7.2.0",
-      "bcrypt": "^6.0.0",
-      "js-cookie": "^3.0.5",
-      "jsdom": "^26.1.0",
-      "jsonwebtoken": "^9.0.2",
-      "lucide-react": "^0.546.0",
-      "luxon": "^3.5.0",
-      "mongodb": "^6.21.0",
-      "mongoose": "^8.21.1",
-      "next": "^16.2.9",
-      "next-auth": "^4.24.14",
-      "react": "^19.0.0",
-      "react-dom": "^19.0.0",
-      "react-hot-toast": "^2.4.1"
-   },
-   "overrides": {
-      "cookie": "^0.7.0",
-      "uuid": "^11.1.1",
-      "next": {
-         "postcss": "^8.5.10"
-      },
-      "@auth/core": {
-         "cookie": "^0.7.0"
-      }
-   },
-   "devDependencies": {
-      "@types/bcrypt": "^6.0.0",
-      "@types/js-cookie": "^3.0.6",
-      "@types/jsdom": "^21.1.7",
-      "@types/jsonwebtoken": "^9.0.10",
-      "@types/luxon": "^3.4.2",
-      "@types/node": "^20",
-      "@types/react": "^18",
-      "@types/react-dom": "^18",
-      "eslint": "^9.39.4",
-      "eslint-config-next": "^16.2.9",
-      "postcss": "^8.5.16",
-      "tailwindcss": "^3.4.1",
-      "typescript": "^5"
-   }
+  "name": "stockfolio",
+  "version": "1.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@auth/mongodb-adapter": "3.11.3",
+    "@fortawesome/fontawesome-free": "^7.2.0",
+    "bcrypt": "^6.0.0",
+    "js-cookie": "^3.0.5",
+    "jsdom": "^26.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "lucide-react": "^0.546.0",
+    "luxon": "^3.5.0",
+    "mongodb": "^6.21.0",
+    "mongoose": "^8.21.1",
+    "next": "16.2.11",
+    "next-auth": "4.24.15",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "react-hot-toast": "^2.4.1",
+    "sharp": "0.35.3"
+  },
+  "overrides": {
+    "cookie": "0.7.0",
+    "uuid": "11.1.1",
+    "next": {
+      "postcss": "8.5.16",
+      "sharp": "0.35.3"
+    },
+    "@auth/core": {
+      "cookie": "0.7.0"
+    }
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "@types/js-cookie": "^3.0.6",
+    "@types/jsdom": "^21.1.7",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/luxon": "^3.4.2",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "9.39.5",
+    "eslint-config-next": "16.2.11",
+    "postcss": "8.5.16",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5"
+  }
 }
