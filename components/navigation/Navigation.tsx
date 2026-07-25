@@ -21,6 +21,7 @@ export default function Navigation() {
               <li className='hover:text-slate-400'><Link href="/dashboard">Dashboard</Link></li>
               <li className='hover:text-slate-400'><Link href="/fundamentals">Fundamentals</Link></li>
               <li className='hover:text-slate-400'><Link href="/exchanges">Exchanges</Link></li>
+              <li className='hover:text-slate-400'><Link href="/account">Account</Link></li>
               <li className='hover:text-slate-400'><button onClick={handleLogout}>Logout</button></li>
           </ul>
       </nav>
@@ -30,6 +31,7 @@ export default function Navigation() {
             <li className='hover:text-slate-400'><Link onClick={()=>setShowMenu(false)} href="/dashboard">Dashboard</Link></li>
             <li className='hover:text-slate-400'><Link onClick={()=>setShowMenu(false)} href="/fundamentals">Fundamentals</Link></li>
             <li className='hover:text-slate-400'><Link onClick={()=>setShowMenu(false)} href="/exchanges">Exchanges</Link></li>
+            <li className='hover:text-slate-400'><Link onClick={()=>setShowMenu(false)} href="/account">Account</Link></li>
             <li className='hover:text-slate-400'><Link onClick={()=>{setShowMenu(false); setShowAddWatchlist(true)}} href="/dashboard">Add Stock</Link></li>
             <li className='hover:text-slate-400'><button onClick={()=>{setShowMenu(false); handleLogout()}}>Logout</button></li>
         </ul>
