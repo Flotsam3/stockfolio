@@ -1,10 +1,13 @@
 // app/portfolios/route.ts
 import StockPortfolio from "@/models/StockPortfolio";
+import { connectDB } from "@/libs/connectDB";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export async function GET() {
    try {
+      await connectDB();
+
       const session = await getServerSession(authOptions);
       if (!session || !session.user?.id) {
          return Response.json({ error: "Not authenticated" }, { status: 401 });
@@ -21,6 +24,8 @@ export async function GET() {
 
 export async function PATCH(request: Request) {
    try {
+      await connectDB();
+
       const session = await getServerSession(authOptions);
       if (!session || !session.user?.id) {
          return Response.json({ error: "Not authenticated" }, { status: 401 });

@@ -1,9 +1,9 @@
 "use client"
 
 import React, { useState, Dispatch, SetStateAction } from 'react';
-import { StockData } from '../types/types';
+import { StockData } from '@/types/types';
 import { getStockPortfolio } from '@/services/dashboard';
-import { AddStockType } from '../types/types';
+import { AddStockType } from '@/types/types';
 import { postNewWatchList } from '@/services/dashboard';
 import toast, {Toaster} from "react-hot-toast";
 

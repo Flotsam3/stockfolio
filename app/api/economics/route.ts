@@ -1,7 +1,10 @@
 import EconomicsModel from "@/models/Economics";
+import { connectDB } from "@/libs/connectDB";
 
 export async function GET(){
     try {
+        await connectDB();
+
         const response = await EconomicsModel.find();
         return Response.json({response, status: 200})
     } catch (error) {
@@ -12,6 +15,8 @@ export async function GET(){
 
 export async function POST(request:Request){
     try {
+        await connectDB();
+
         const body = await request.json();
         console.log({body});
         

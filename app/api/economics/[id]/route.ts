@@ -1,10 +1,17 @@
 import StockPortfolio from "@/models/StockPortfolio";
 import EconomicsModel from "@/models/Economics";
+import { connectDB } from "@/libs/connectDB";
 import { EconomicsType } from "@/types/types";
 import { EconomicEntry } from "@/types/types";
 
-export async function GET(request:Request, {params}:{params: {id: string}}) {
+type RouteContext = {
+    params: Promise<{ id: string }>;
+};
+
+export async function GET(request: Request, { params }: RouteContext) {
     try {
+        await connectDB();
+
         const {id} = await params;
         console.log({id});
         const users = await StockPortfolio.findOne({id});
@@ -19,9 +26,11 @@ export async function GET(request:Request, {params}:{params: {id: string}}) {
     }
   }
 
-  export async function PUT(request:Request, {params}:{params: {id: string}}) {
+  export async function PUT(request: Request, { params }: RouteContext) {
     
     try {
+        await connectDB();
+
         const {id} = await params;
 
         const body: EconomicsType = await request.json();
