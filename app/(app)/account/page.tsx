@@ -134,8 +134,6 @@ export default function AccountPage() {
 
    return (
       <div className="min-h-[calc(100vh-86px)] bg-neutral-300 px-4 py-24">
-         <h1 className="mb-4 text-center text-3xl font-bold">Account</h1>
-
          <section className="mx-auto grid max-w-5xl gap-4 text-white md:grid-cols-2">
             <div className="rounded-sm bg-zinc-600 p-5 shadow-xl md:col-span-2">
                <h2 className="mb-4 text-center text-lg">Account Overview</h2>
