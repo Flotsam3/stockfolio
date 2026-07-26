@@ -154,7 +154,7 @@ export default function WatchListPanel({ watchList, stockData, setStockData }: {
                                  </div>
                               </div>
                               <div className="flex flex-col items-center sm:col-span-1 [&>input]:w-[90%] [&>input]:bg-slate-200 [&>input]:rounded-md [&>input]:p-1 [&>input]:outline-none [&>*]:text-center">
-                                 <p>Rate</p>
+                                 <p>Rate ($)</p>
                                  <input type="number" onChange={(evt) => setInput({ ...input, rate: +evt.target.value })} value={input.rate} />
                               </div>
                               <div className="flex flex-col items-center sm:col-span-1 [&>input]:w-[90%] [&>input]:bg-slate-200 [&>input]:rounded-md [&>input]:p-1 [&>input]:outline-none [&>*]:text-center">
@@ -243,7 +243,7 @@ export default function WatchListPanel({ watchList, stockData, setStockData }: {
                                  </div>
                               </div>
                               <div className="sm:col-span-1 [&>*]:text-center">
-                                 <p>Rate</p>
+                                 <p>Rate ($)</p>
                                  <p>{obj.rate}</p>
                               </div>
                               <div className="sm:col-span-1 [&>*]:text-center">

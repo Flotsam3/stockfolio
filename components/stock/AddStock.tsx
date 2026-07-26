@@ -63,7 +63,7 @@ export default function AddStock({setStockData, stockData}:{setStockData: Dispat
             <label>Country Code
                 <input type="text" maxLength={2} name='country' onChange={(evt)=>setInput({...input, country:evt.target.value})} value={input.country}/>
             </label>
-            <label>Rate
+            <label>Rate ($)
                 <input type="number" name='rate' onChange={(evt)=>setInput({...input, rate:+evt.target.value})} value={input.rate}/>
             </label>
             <label title='yahoo.com/statistiken/GuV'>Diluted EPS (ttm)
