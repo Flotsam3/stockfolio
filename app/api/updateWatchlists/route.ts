@@ -33,9 +33,10 @@ export async function GET(request: NextRequest) {
       console.log("Fetching data for ticker:", ticker);
 
       // Parallel fetch for all source pages
-      const [ratiosHtml, financialsHtml, statsHtml, finvizEpsGrowth5Y] = await Promise.all([
+      const [ratiosHtml, financialsHtml, incomeStatementHtml, statsHtml, finvizEpsGrowth5Y] = await Promise.all([
          fetch(`https://stockanalysis.com/stocks/${ticker}/financials/ratios/`).then((res) => res.text()),
          fetch(`https://stockanalysis.com/stocks/${ticker}/financials/`).then((res) => res.text()),
+         fetch(`https://stockanalysis.com/stocks/${ticker}/financials/income-statement/`).then((res) => res.text()),
          fetch(`https://stockanalysis.com/stocks/${ticker}/statistics/`).then((res) => res.text()),
          fetchFinvizEpsGrowth5Y(ticker).catch((error) => {
             console.warn(`Could not fetch EPS next 5Y from Finviz for ${ticker}:`, error);
@@ -46,6 +47,7 @@ export async function GET(request: NextRequest) {
       // Parse DOMs
       const ratiosDoc = new JSDOM(ratiosHtml).window.document;
       const financialsDoc = new JSDOM(financialsHtml).window.document;
+      const incomeStatementDoc = new JSDOM(incomeStatementHtml).window.document;
       const statsDoc = new JSDOM(statsHtml).window.document;
 
       // Check if page returned 404 or error
@@ -78,14 +80,26 @@ export async function GET(request: NextRequest) {
       const afterHoursEl = ratiosDoc.querySelector("div.block.font-semibold.leading-5.text-faded");
       afterHoursPrice = afterHoursEl?.textContent?.trim() || null;
 
-      // Extract EPS (Diluted) from financials page
+      // Extract EPS (Diluted) from the income statement page.
       let epsDiluted: string = "";
-      for (let row of financialsDoc.querySelectorAll("tr")) {
+      for (let row of incomeStatementDoc.querySelectorAll("tr")) {
          const firstCol = row.querySelector("td");
          if (firstCol?.textContent?.trim() === "EPS (Diluted)") {
             const cells = row.querySelectorAll("td");
             epsDiluted = cells[1]?.textContent?.trim() || "";
             break;
+         }
+      }
+
+      // Fallback for the Financials Overview page, where EPS is now labeled differently.
+      if (!epsDiluted) {
+         for (let row of financialsDoc.querySelectorAll("tr")) {
+            const firstCol = row.querySelector("td")?.textContent?.trim() || "";
+            if (firstCol.includes("Earnings Per Share")) {
+               const cells = row.querySelectorAll("td");
+               epsDiluted = cells[1]?.textContent?.trim() || "";
+               break;
+            }
          }
       }
 
