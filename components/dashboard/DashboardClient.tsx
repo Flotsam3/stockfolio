@@ -5,7 +5,7 @@ import AddStock from "@/components/stock/AddStock";
 import WatchListSection from "./WatchListSection";
 import AddWatchList from "@/components/watchlist/AddWatchList";
 import { StockData } from "@/types/types";
-import { useState, Suspense } from "react";
+import { useState } from "react";
 import { EconomicsType } from "@/types/types";
 import { useStockContext } from "@/context/StockContext";
 import SafetyOverview from "@/components/stock/SafetyOverview";
@@ -21,7 +21,7 @@ export default function DashboardClient() {
    });
 
    const [portfolioNames, setPortfolioNames] = useState<StockData[]>([]);
-   const [targetReturn, setTargetReturn] = useState(12);
+   const [targetReturn] = useState(12);
 
    console.log({ portfolioNames, stockData });
 

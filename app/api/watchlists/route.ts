@@ -4,6 +4,12 @@ import { connectDB } from "@/libs/connectDB";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
+type MongoWriteError = {
+   code?: number;
+   name?: string;
+   message?: string;
+};
+
 // Helper function to get authenticated user
 async function getAuthenticatedUserId() {
    const session = await getServerSession(authOptions);
@@ -36,21 +42,22 @@ export async function POST(request: Request) {
       console.log('Creating portfolio', { name: body, userId });
       const response2 = await StockPortfolio.create({ name: body, active: true, userId });
       return Response.json(response2, { status: 201 });
-   } catch (error: any) {
+   } catch (error: unknown) {
       console.log(error);
+      const mongoError = error as MongoWriteError;
       // Mongoose duplicate key
-      if (error?.code === 11000) {
+      if (mongoError?.code === 11000) {
          return Response.json({ error: 'A portfolio with that name already exists for this user.' }, { status: 409 });
       }
       // Validation errors
-      if (error?.name === 'ValidationError') {
-         return Response.json({ error: error.message }, { status: 400 });
+      if (mongoError?.name === 'ValidationError') {
+         return Response.json({ error: mongoError.message }, { status: 400 });
       }
       return Response.json({ msg: "Server error!", error: String(error) }, { status: 500 });
    }
 }
 
-export async function GET(request: Request) {
+export async function GET() {
    try {
       await connectDB();
       
@@ -133,7 +140,7 @@ export async function PATCH(request: Request) {
       console.log("payload", body.payload);
 
       // Build the $set object dynamically to include all fields
-      const updateFields: any = {
+      const updateFields: Record<string, unknown> = {
          "watchList.$.name": body.payload.name,
          "watchList.$.ticker": body.payload.ticker,
          "watchList.$.isin": body.payload.isin,

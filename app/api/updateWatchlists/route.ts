@@ -59,7 +59,7 @@ export async function GET(request: NextRequest) {
 
       // Extract PE Ratios from ratios page
       let peRatios: string[] = [];
-      for (let row of ratiosDoc.querySelectorAll("tr")) {
+      for (const row of ratiosDoc.querySelectorAll("tr")) {
          if (row.textContent?.includes("PE Ratio")) {
             const cells = row.querySelectorAll("td");
             peRatios = Array.from(cells)
@@ -82,7 +82,7 @@ export async function GET(request: NextRequest) {
 
       // Extract EPS (Diluted) from the income statement page.
       let epsDiluted: string = "";
-      for (let row of incomeStatementDoc.querySelectorAll("tr")) {
+      for (const row of incomeStatementDoc.querySelectorAll("tr")) {
          const firstCol = row.querySelector("td");
          if (firstCol?.textContent?.trim() === "EPS (Diluted)") {
             const cells = row.querySelectorAll("td");
@@ -93,7 +93,7 @@ export async function GET(request: NextRequest) {
 
       // Fallback for the Financials Overview page, where EPS is now labeled differently.
       if (!epsDiluted) {
-         for (let row of financialsDoc.querySelectorAll("tr")) {
+         for (const row of financialsDoc.querySelectorAll("tr")) {
             const firstCol = row.querySelector("td")?.textContent?.trim() || "";
             if (firstCol.includes("Earnings Per Share")) {
                const cells = row.querySelectorAll("td");
@@ -105,7 +105,7 @@ export async function GET(request: NextRequest) {
 
       // Extract EPS next 5Y from Finviz, with the old StockAnalysis label as a fallback
       let epsGrowth5Y: string | null = finvizEpsGrowth5Y;
-      for (let row of statsDoc.querySelectorAll("tr")) {
+      for (const row of statsDoc.querySelectorAll("tr")) {
          const label = row.querySelector("td")?.textContent?.trim() || "";
          if (!epsGrowth5Y && label === "EPS Growth Forecast (5Y)") {
             epsGrowth5Y = row.querySelectorAll("td")[1]?.textContent?.trim() || null;
@@ -123,8 +123,8 @@ export async function GET(request: NextRequest) {
 
       // Return all data
       return Response.json({ ticker, realTimePrice, peRatios, epsDiluted, epsGrowth5Y }, { status: 200 });
-   } catch (err: any) {
+   } catch (err: unknown) {
       console.error("Error in updateWatchlists:", err);
-      return Response.json({ error: err.message }, { status: 500 });
+      return Response.json({ error: err instanceof Error ? err.message : "Server error!" }, { status: 500 });
    }
 }

@@ -11,6 +11,7 @@ import { fetchPERatios } from "@/services/stockanalysis";
 import { calcSafetyMargin } from "@/utils/stockCalculations";
 import { Star, Lightbulb } from "lucide-react";
 import StockTooltip from "@/components/stock/StockTooltip";
+import Image from "next/image";
 import "./WatchListPanel.css";
 
 export default function WatchListPanel({ watchList, stockData, setStockData }: { watchList: AddStockType[]; stockData: StockData; setStockData: Dispatch<SetStateAction<StockData>> }) {
@@ -32,7 +33,7 @@ export default function WatchListPanel({ watchList, stockData, setStockData }: {
 
    async function handleEdit(obj: AddStockType) {
       if (edit) {
-         const data = await updateWatchList(input, stockData.name);
+         await updateWatchList(input, stockData.name);
          setEdit(false);
 
          const updateData = await getStockPortfolio();
@@ -45,7 +46,7 @@ export default function WatchListPanel({ watchList, stockData, setStockData }: {
 
    async function handleDelete(id: string | undefined) {
       if (!id) return;
-      const response = await deleteOneWatchList(stockData.name, id);
+      await deleteOneWatchList(stockData.name, id);
 
       const updateData = await getStockPortfolio();
       if (updateData && updateData._id) setStockData(updateData);
@@ -133,14 +134,14 @@ export default function WatchListPanel({ watchList, stockData, setStockData }: {
                               <div className="sm:col-span-1 flex flex-col items-center [&>input]:w-[90%] [&>input]:bg-slate-200 [&>input]:rounded-md [&>input]:p-1 [&>input]:outline-none [&>*]:text-center">
                                  <input type="text" onChange={(evt) => setInput({ ...input, isin: evt.target.value })} value={input.isin} />
                                  <div className="flex items-center gap-1 relative">
-                                    <img src={`https://flagcdn.com/w40/${obj.country}.png`} srcSet={`https://flagcdn.com/w80/${obj.country}.png 2x`} width="40" alt="Country flag" />
+                                    <Image src={`https://flagcdn.com/w40/${obj.country}.png`} width={40} height={27} alt="Country flag" />
                                     <div
                                        className="relative"
-                                       onMouseEnter={(e) => {
+                                       onMouseEnter={() => {
                                           const tooltip = document.getElementById(`tooltip-${obj.isin}`);
                                           if (tooltip) tooltip.style.display = "block";
                                        }}
-                                       onMouseLeave={(e) => {
+                                       onMouseLeave={() => {
                                           const tooltip = document.getElementById(`tooltip-${obj.isin}`);
                                           if (tooltip) tooltip.style.display = "none";
                                        }}
@@ -218,14 +219,14 @@ export default function WatchListPanel({ watchList, stockData, setStockData }: {
                               <div className="sm:col-span-1 flex flex-col items-center [&>*]:text-center">
                                  <p>{obj.isin}</p>
                                  <div className="flex items-center gap-1 relative">
-                                    <img src={`https://flagcdn.com/w40/${obj.country}.png`} srcSet={`https://flagcdn.com/w80/${obj.country}.png 2x`} width="40" alt="Country flag" />
+                                    <Image src={`https://flagcdn.com/w40/${obj.country}.png`} width={40} height={27} alt="Country flag" />
                                     <div
                                        className="relative"
-                                       onMouseEnter={(e) => {
+                                       onMouseEnter={() => {
                                           const tooltip = document.getElementById(`tooltip-${obj.isin}`);
                                           if (tooltip) tooltip.style.display = "block";
                                        }}
-                                       onMouseLeave={(e) => {
+                                       onMouseLeave={() => {
                                           const tooltip = document.getElementById(`tooltip-${obj.isin}`);
                                           if (tooltip) tooltip.style.display = "none";
                                        }}

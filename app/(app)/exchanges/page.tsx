@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 import React from 'react';
 import data from '@/data/exchangeData';
 import { DateTime } from 'luxon';
+import Image from 'next/image';
 
 function isMarketOpen(openTime: string, closingTime: string, timeZone: string, names: string) {
     const [hours1, minutes1] = openTime.split(':').map(Number);
@@ -64,14 +65,14 @@ function isMarketOpen(openTime: string, closingTime: string, timeZone: string, n
 export default function ExchangesPage() {
     return (
         <div className='flex flex-wrap justify-center gap-4 w-[vw-80%] p-28'>
-            {data.map((obj: any, index: number) => {
+            {data.map((obj, index: number) => {
                 const times = isMarketOpen(obj.localOpen, obj.localClose, obj.localTimezone, obj.names);
                 return (
                     <div key={index} className={`flex flex-col gap-1 w-72 p-5 ${times.status === 'open' ? 'bg-green-100' : 'bg-red-100'} text-gray-800 rounded-xl shadow-md`}>
                         {obj.country === 'Global' ? (
-                            <img src='/images/globe.png' alt='Globe' width={30} />
+                            <Image src='/images/globe.png' alt='Globe' width={30} height={30} />
                         ) : (
-                            <img src={`https://flagcdn.com/w40/${obj.country}.png`} srcSet={`https://flagcdn.com/w80/${obj.country}.png 2x`} width='40' alt='Country flag' />
+                            <Image src={`https://flagcdn.com/w40/${obj.country}.png`} width={40} height={27} alt='Country flag' />
                         )}
                         <h3 className='font-bold'>{obj.names}</h3>
                         <p>Open: {times.localOpenTime}</p>

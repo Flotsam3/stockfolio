@@ -12,6 +12,10 @@ type AccountData = {
    createdAt?: string;
 };
 
+function getErrorMessage(error: unknown, fallback: string) {
+   return error instanceof Error ? error.message : fallback;
+}
+
 export default function AccountPage() {
    const [account, setAccount] = useState<AccountData | null>(null);
    const [isLoading, setIsLoading] = useState(true);
@@ -36,8 +40,8 @@ export default function AccountPage() {
 
             setAccount(data);
             setEmail(data.email || "");
-         } catch (error: any) {
-            toast.error(error.message || "Could not load account data");
+         } catch (error: unknown) {
+            toast.error(getErrorMessage(error, "Could not load account data"));
          } finally {
             setIsLoading(false);
          }
@@ -65,8 +69,8 @@ export default function AccountPage() {
 
          toast.success("Email updated. Please sign in again.");
          setTimeout(() => signOut({ callbackUrl: "/auth/login" }), 1200);
-      } catch (error: any) {
-         toast.error(error.message || "Could not update email");
+      } catch (error: unknown) {
+         toast.error(getErrorMessage(error, "Could not update email"));
       } finally {
          setIsSubmitting(false);
       }
@@ -96,8 +100,8 @@ export default function AccountPage() {
          setNewPassword("");
          setConfirmPassword("");
          toast.success("Password updated");
-      } catch (error: any) {
-         toast.error(error.message || "Could not update password");
+      } catch (error: unknown) {
+         toast.error(getErrorMessage(error, "Could not update password"));
       } finally {
          setIsSubmitting(false);
       }
@@ -125,8 +129,8 @@ export default function AccountPage() {
 
          toast.success("Account deleted");
          setTimeout(() => signOut({ callbackUrl: "/auth/login" }), 800);
-      } catch (error: any) {
-         toast.error(error.message || "Could not delete account");
+      } catch (error: unknown) {
+         toast.error(getErrorMessage(error, "Could not delete account"));
       } finally {
          setIsSubmitting(false);
       }

@@ -14,6 +14,10 @@ async function getAuthenticatedUserId() {
    return session.user.id;
 }
 
+type MongoDuplicateError = {
+   code?: number;
+};
+
 export async function PATCH(request: Request) {
    try {
       await connectDB();
@@ -57,10 +61,10 @@ export async function PATCH(request: Request) {
       await user.save({ validateModifiedOnly: true });
 
       return Response.json({ message: "Email updated successfully", email: user.email }, { status: 200 });
-   } catch (error: any) {
+   } catch (error: unknown) {
       console.log(error);
 
-      if (error?.code === 11000) {
+      if ((error as MongoDuplicateError)?.code === 11000) {
          return Response.json({ error: "Email is already in use" }, { status: 409 });
       }
 

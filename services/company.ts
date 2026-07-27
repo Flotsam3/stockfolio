@@ -14,7 +14,7 @@ export async function getCompany(name:string){
     }
 }
 
-export async function createCompany(companyData: any){
+export async function createCompany(companyData: unknown){
     try {
         if (!companyData) return; 
         const response = await fetch(`/api/companies`, {
@@ -32,7 +32,7 @@ export async function createCompany(companyData: any){
     }
 }
 
-export async function updateCompany(name:string, companyData: any){
+export async function updateCompany(name:string, companyData: unknown){
     try {
         if (!companyData) return; 
         const response = await fetch(`/api/companies/${name}`, {

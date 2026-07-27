@@ -20,7 +20,7 @@ export async function postEconomics(economicsData: EconomicsType){
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(economicsData)
         });
-        const data = await response.json();
+        await response.json();
     } catch (error) {
         console.log(error);
     }

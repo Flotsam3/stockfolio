@@ -83,7 +83,7 @@ export default function LoginForm() {
                      <span className="text-2xl font-bold">Stockfolio</span>
                   </Link>
                   <div className="flex gap-4 items-center">
-                     <span className="text-sm text-gray-400">Don't have an account?</span>
+                     <span className="text-sm text-gray-400">Don&apos;t have an account?</span>
                      <Link
                         href="/auth/register"
                         className="px-6 py-2 bg-[#facc15] text-[#33313c] rounded-lg text-sm font-semibold hover:bg-[#fcd34d] transition-all hover:scale-105"
@@ -253,7 +253,7 @@ export default function LoginForm() {
                </div>
 
                <p className="mt-8 text-center text-sm text-gray-400">
-                  Don't have an account?{" "}
+                  Don&apos;t have an account?{" "}
                   <Link
                      href="/auth/register"
                      className="text-[#facc15] hover:text-[#fcd34d] font-medium transition-colors"

@@ -27,7 +27,7 @@ export default function Details({ id, name }: { id: string, name: string }) {
                         <h3 className='py-3 text-center font-bold'>Data Frequency</h3>
                         <p>Use daily closing prices for precision.</p>
                         <p><span className='font-bold'>Intra-Day Analysis:</span> For short-term trading, you might even consider intra-day values (e.g., hourly or 15-minute intervals).</p>
-                        <p>If you're analyzing a one-month SMA, daily values are the most straightforward starting point.</p>
+                        <p>If you&apos;re analyzing a one-month SMA, daily values are the most straightforward starting point.</p>
                         <h3 className='py-3 text-center font-bold'>Evaluation</h3>
                         <h4 className='py-3 text-center font-bold'>Price Position Relative to SMA</h4>
                         <p>If the price is consistently above the SMA, it indicates an uptrend.</p>
@@ -41,8 +41,8 @@ export default function Details({ id, name }: { id: string, name: string }) {
                         <p>If the price crosses below the SMA from above, it might indicate the start of a downtrend.</p>
                         <p>If the current price {">"} SMA, it signals an uptrend.</p>
                         <p>If the current price {"<"} SMA, it signals a downtrend.</p>
-                        <p>When the 50-day SMA crosses above the 200-day SMA (Golden Cross), it's a bullish signal.</p>
-                        <p>When the 50-day SMA crosses below the 200-day SMA (Death Cross), it's bearish.</p>
+                        <p>When the 50-day SMA crosses above the 200-day SMA (Golden Cross), it&apos;s a bullish signal.</p>
+                        <p>When the 50-day SMA crosses below the 200-day SMA (Death Cross), it&apos;s bearish.</p>
                     </div>
                     <h2 onClick={handleClick} id='ema' className='text-center my-2 text-sky-600 font-bold text-xl cursor-pointer'>EMA (Exponential Moving Average)</h2>
                     <a href={`https://de.finance.yahoo.com/chart/${id}`} target='_blank' className='block text-center font-bold italic mb-2'>Evaluate on Yahoo Finance</a>
@@ -57,7 +57,7 @@ export default function Details({ id, name }: { id: string, name: string }) {
                         <h3 className='py-3 text-center font-bold'>Data Frequency</h3>
                         <p>Use daily closing prices for precision.</p>
                         <p><span className='font-bold'>Intra-Day Analysis:</span> For short-term trading, you might even consider intra-day values (e.g., hourly or 15-minute intervals).</p>
-                        <p>If you're analyzing a one-month EMA, daily values are the most straightforward starting point.</p>
+                        <p>If you&apos;re analyzing a one-month EMA, daily values are the most straightforward starting point.</p>
                         <h3 className='py-3 text-center font-bold'>Evaluation</h3>
                         <h4 className='py-3 text-center font-bold'>Price Position Relative to EMA</h4>
                         <p>If the price is consistently above the EMA, it indicates an uptrend.</p>
@@ -71,14 +71,14 @@ export default function Details({ id, name }: { id: string, name: string }) {
                         <p>If the price crosses below the EMA from above, it might indicate the start of a downtrend.</p>
                         <p>If the current price {">"} EMA, it signals an uptrend.</p>
                         <p>If the current price {"<"} EMA, it signals a downtrend.</p>
-                        <p>When the 50-day EMA crosses above the 200-day EMA (Golden Cross), it's a bullish signal.</p>
-                        <p>When the 50-day EMA crosses below the 200-day EMA (Death Cross), it's bearish.</p>
+                        <p>When the 50-day EMA crosses above the 200-day EMA (Golden Cross), it&apos;s a bullish signal.</p>
+                        <p>When the 50-day EMA crosses below the 200-day EMA (Death Cross), it&apos;s bearish.</p>
                     </div>
                     <h2 onClick={handleClick} id='adx' className='text-center my-2 text-sky-600 font-bold text-xl cursor-pointer'>ADX (Average Directional Index)</h2>
                     <a href={`https://de.finance.yahoo.com/chart/${id}`} target='_blank' className='block text-center font-bold italic mb-2'>Evaluate on Yahoo Finance</a>
                     <div className={expand === "adx" ? "block" : "hidden"}>
                         <p> ADX measures the strength of a trend, regardless of its direction, on a scale from 0 to 100</p>
-                        <p>It's calculated based on the difference between a positive directional index (+DI) and a negative directional index (-DI).</p>
+                        <p>It&apos;s calculated based on the difference between a positive directional index (+DI) and a negative directional index (-DI).</p>
                         <h3 className='py-3 text-center font-bold'>ADX Values</h3>
                         <p>0-20: Weak or no trend (ranging market).</p>
                         <p>20-25: Indeterminate zone (the trend may be forming or fading).</p>
@@ -312,7 +312,7 @@ export default function Details({ id, name }: { id: string, name: string }) {
                         <p>Falling ATR in a trend may signal weakening momentum or consolidation.</p>
 
                         <p className='font-bold'>Absolute Value</p>
-                        <p>ATR is non-directional; it doesn't indicate trend direction but provides insight into price movement magnitude.</p>
+                        <p>ATR is non-directional; it doesn&apos;t indicate trend direction but provides insight into price movement magnitude.</p>
                         <p>Use ATR values relative to historical norms for the specific asset to assess whether current volatility is high or low.</p>
 
                         <h3 className='py-3 text-center font-bold'>Signal Confirmation</h3>
@@ -400,7 +400,7 @@ export default function Details({ id, name }: { id: string, name: string }) {
 
                         <p className='font-bold'>Long-Term Trends</p>
                         <p>Settings: Use OBV on weekly or monthly timeframes for insights into institutional accumulation or distribution.</p>
-                        <p>Data Frequency: Focus on OBV's trendline over extended periods to understand the strength of long-term price trends.</p>
+                        <p>Data Frequency: Focus on OBV&apos;s trendline over extended periods to understand the strength of long-term price trends.</p>
                         <p>Focus: Track divergences over months to predict major reversals or continuation of trends.</p>
 
                         <h3 className='py-3 text-center font-bold'>Evaluation</h3>

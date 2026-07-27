@@ -30,7 +30,7 @@ export async function getStockPortfolio(){
     }
 }
 
-export async function postNewWatchList(payload:AddStockType, name:string, targetReturn:Number){
+export async function postNewWatchList(payload:AddStockType, name:string, targetReturn:number){
     try {
         const response = await fetch(`/api/watchlists`, {
             method: "PUT",
@@ -53,7 +53,7 @@ export async function switchWatchList(id:string){
         const data = await response.json();
         console.log(data);
         return data;
-    } catch (error) {
+    } catch {
         console.log();
     }
 }
@@ -110,7 +110,7 @@ export async function deleteOneWatchList(name:string, id:string){
         const data = await response.json();
         console.log(data);
         return data;
-    } catch (error) {
+    } catch {
         console.log();
     }
 }

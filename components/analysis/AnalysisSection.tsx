@@ -1,78 +1,49 @@
 "use client"
 
-import React, {useState, useEffect} from 'react';
 import { Profitability, EfficiencyAndLeverage, Liquidity, Valuation } from '@/types/types';
 
-type AnalisisProps = {
+type AnalysisProps = {
     profitability: Profitability,
     efficiencyAndLeverage: EfficiencyAndLeverage,
     liquidity: Liquidity,
     valuation: Valuation
 }
 
-export default function AnalysisSection({title, data}:{title:string, data:AnalisisProps}) {
-    const [monthlyData, setMonthlyData] = useState<any[]>([]);
-    const [quarterlyData, setQuarterlyData] = useState<any[]>([]);
-    const [valueName, setValueName] = useState<string>("");
+type AnalysisRecord = Record<string, string | number | undefined>;
 
-    useEffect(()=>{
-        switch (title) {
-            case "Gross Profit": 
-                setMonthlyData(data.profitability.annual);
-                setQuarterlyData(data.profitability.quarterly);
-                setValueName("grossProfit")
-                break;
-            case "Operating Income": 
-                setMonthlyData(data.profitability.annual);
-                setQuarterlyData(data.profitability.quarterly);
-                setValueName("operatingIncome")
-                break;
-            case "Net Income": 
-                setMonthlyData(data.profitability.annual);
-                setQuarterlyData(data.profitability.quarterly);
-                setValueName("netIncome")
-                break;
-            case "EBITDA": 
-                setMonthlyData(data.efficiencyAndLeverage.ebitdaAnnual);
-                setQuarterlyData(data.efficiencyAndLeverage.ebitdaQuarterly);
-                setValueName("value")
-                break;
-            case "Debt-to-Equity Ratio": 
-                setMonthlyData(data.efficiencyAndLeverage.debtToEquityAnnual);
-                setQuarterlyData(data.efficiencyAndLeverage.debtToEquityQuarterly);
-                setValueName("value")
-                break;
-            case "Current Ratio": 
-                setMonthlyData(data.liquidity.currentRatioAnnual);
-                setQuarterlyData(data.liquidity.currentRatioQuarterly);
-                setValueName("value")
-                break;
-            case "Operating Cash Flow": 
-                setMonthlyData(data.liquidity.cashFlowAnnual);
-                setQuarterlyData(data.liquidity.cashFlowQuarterly);
-                setValueName("value")
-                break;
-            case "Earnings Per Share (EPS)": 
-                setMonthlyData(data.valuation.epsAnnual);
-                setQuarterlyData(data.valuation.epsQuarterly);
-                setValueName("value")
-                break;
-            case "Price-To-Earnings (P/E) Ratio": 
-                setMonthlyData(data.valuation.peRatioAnnual);
-                setQuarterlyData(data.valuation.peRatioQuarterly);
-                setValueName("value")
-                break;
-        
-            default:
-                break;
-        }
-    },[data])
+function getAnalysisData(title: string, data: AnalysisProps) {
+    switch (title) {
+        case "Gross Profit":
+            return { monthlyData: data.profitability.annual, quarterlyData: data.profitability.quarterly, valueName: "grossProfit" };
+        case "Operating Income":
+            return { monthlyData: data.profitability.annual, quarterlyData: data.profitability.quarterly, valueName: "operatingIncome" };
+        case "Net Income":
+            return { monthlyData: data.profitability.annual, quarterlyData: data.profitability.quarterly, valueName: "netIncome" };
+        case "EBITDA":
+            return { monthlyData: data.efficiencyAndLeverage.ebitdaAnnual, quarterlyData: data.efficiencyAndLeverage.ebitdaQuarterly, valueName: "value" };
+        case "Debt-to-Equity Ratio":
+            return { monthlyData: data.efficiencyAndLeverage.debtToEquityAnnual, quarterlyData: data.efficiencyAndLeverage.debtToEquityQuarterly, valueName: "value" };
+        case "Current Ratio":
+            return { monthlyData: data.liquidity.currentRatioAnnual, quarterlyData: data.liquidity.currentRatioQuarterly, valueName: "value" };
+        case "Operating Cash Flow":
+            return { monthlyData: data.liquidity.cashFlowAnnual, quarterlyData: data.liquidity.cashFlowQuarterly, valueName: "value" };
+        case "Earnings Per Share (EPS)":
+            return { monthlyData: data.valuation.epsAnnual, quarterlyData: data.valuation.epsQuarterly, valueName: "value" };
+        case "Price-To-Earnings (P/E) Ratio":
+            return { monthlyData: data.valuation.peRatioAnnual, quarterlyData: data.valuation.peRatioQuarterly, valueName: "value" };
+        default:
+            return { monthlyData: [], quarterlyData: [], valueName: "value" };
+    }
+}
+
+export default function AnalysisSection({title, data}:{title:string, data:AnalysisProps}) {
+    const { monthlyData, quarterlyData, valueName } = getAnalysisData(title, data);
 
   return (
     <section className='py-3'>
         <h3 className='text-center text-yellow-500 '>{title}</h3>
         <div className='flex justify-evenly text-gray-400 [&>div>p:last-of-type]:text-sm'>
-            {monthlyData.map((obj, index)=>(
+            {(monthlyData as AnalysisRecord[]).map((obj, index)=>(
                 <div key={index} className='flex flex-col items-center'>
                     <p>{obj.year}</p>
                     <p className='text-white text-center'>{obj[valueName]}</p>
@@ -80,7 +51,7 @@ export default function AnalysisSection({title, data}:{title:string, data:Analis
             ))}
         </div>
         <div className='flex justify-evenly text-gray-400 [&>div>p:last-of-type]:text-sm'>
-            {quarterlyData.map((obj, index)=>(
+            {(quarterlyData as AnalysisRecord[]).map((obj, index)=>(
                 <div key={index} className='flex flex-col items-center'>
                     <p>{`${obj.month}/${obj.year}`}</p>
                     <p className='text-white text-center'>{obj[valueName]}</p>

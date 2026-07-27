@@ -41,7 +41,7 @@ export default function SafetyOverview({ stockData }: { stockData: StockData }) 
    const top = stocksWithSafety.slice(0, topCount);
    const bottom = stocksWithSafety.slice(-bottomCount).reverse();
 
-   const StockRow = ({ stock, index, isTop }: { stock: any; index: number; isTop: boolean }) => (
+   const StockRow = ({ stock, index, isTop }: { stock: AddStockType & { safetyMargin: string; safetyNumeric: number }; index: number; isTop: boolean }) => (
       <div className="flex justify-between items-center py-2 px-3 hover:bg-gray-50 rounded transition-colors">
          <div className="flex items-center gap-3 flex-1">
             <span className="text-gray-500 font-medium w-6">{isTop ? index + 1 : totalStocks - index}</span>

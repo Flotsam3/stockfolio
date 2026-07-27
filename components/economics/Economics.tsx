@@ -33,7 +33,7 @@ export default function Economics({
       const run = async () => {
          try {
             if (activeStock) {
-               const response: any = await prepareEconomics(setEconomics);
+               const response: unknown = await prepareEconomics(setEconomics);
                if (String(response).includes("Error")) notify();
             }
          } catch (error) {
@@ -41,7 +41,7 @@ export default function Economics({
          }
       };
       run();
-   }, [activeStock]);
+   }, [activeStock, setEconomics]);
 
    async function handleInput() {
       await updateAnualTargetReturn(activeStock, input);

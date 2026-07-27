@@ -84,7 +84,7 @@ export const authOptions: NextAuthOptions = {
   },
 
   callbacks: {
-    async signIn({ user, account, profile }) {
+    async signIn({ user, account }) {
       console.log("🔐 Sign in attempt:", { user, provider: account?.provider });
 
       // For OAuth logins, create/update user in database
@@ -122,7 +122,7 @@ export const authOptions: NextAuthOptions = {
       return true;
     },
 
-    async jwt({ token, user, account }) {
+    async jwt({ token, user }) {
       if (user) {
         console.log("📝 Creating JWT for user:", user.id);
         token.id = user.id;

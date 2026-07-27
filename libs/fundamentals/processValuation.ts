@@ -13,8 +13,8 @@ export function processValuation(balance:incomeData, cashFlow:incomeData, monthl
     const slicedData = transformedArray.slice(0, 72);
     const monthlyStockData = slicedData.slice(0, 24);
 
-    let epsArrayAnnual: {eps:string, year:string}[] = [];
-    let epsArrayMonthly: {eps:string, month:string, year:string}[] = [];
+    const epsArrayAnnual: {eps:string, year:string}[] = [];
+    const epsArrayMonthly: {eps:string, month:string, year:string}[] = [];
 
     const annualResult1 = annualBalance.map((obj, index)=>{
         const yearBalance = obj.fiscalDateEnding.slice(2, 4);
