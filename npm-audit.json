@@ -1,110 +1,22 @@
 {
   "auditReportVersion": 2,
-  "vulnerabilities": {
-    "@auth/core": {
-      "name": "@auth/core",
-      "severity": "critical",
-      "isDirect": false,
-      "via": [
-        {
-          "source": 1124245,
-          "name": "@auth/core",
-          "dependency": "@auth/core",
-          "title": "Auth.js: getToken() throws an uncaught exception on malformed Bearer authorization headers",
-          "url": "https://github.com/advisories/GHSA-xmf8-cvqr-rfgj",
-          "severity": "high",
-          "cwe": [
-            "CWE-20"
-          ],
-          "cvss": {
-            "score": 7.5,
-            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
-          },
-          "range": ">=0.1.0 <0.41.3"
-        },
-        {
-          "source": 1124248,
-          "name": "@auth/core",
-          "dependency": "@auth/core",
-          "title": "Auth.js: Email normalizer validates the address before Unicode normalization, allowing a homoglyph @ bypass",
-          "url": "https://github.com/advisories/GHSA-7rqj-j65f-68wh",
-          "severity": "critical",
-          "cwe": [
-            "CWE-180"
-          ],
-          "cvss": {
-            "score": 0,
-            "vectorString": null
-          },
-          "range": ">=0.1.0 <0.41.3"
-        },
-        {
-          "source": 1124251,
-          "name": "@auth/core",
-          "dependency": "@auth/core",
-          "title": "Auth.js: OAuth state, nonce, and PKCE check cookies are not bound to the provider that created them",
-          "url": "https://github.com/advisories/GHSA-x445-f3h2-j279",
-          "severity": "moderate",
-          "cwe": [
-            "CWE-345",
-            "CWE-346",
-            "CWE-940"
-          ],
-          "cvss": {
-            "score": 6.8,
-            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:H/I:H/A:N"
-          },
-          "range": "<=0.41.2"
-        }
-      ],
-      "effects": [
-        "next-auth"
-      ],
-      "range": "<=0.41.2",
-      "nodes": [
-        "node_modules/@auth/core"
-      ],
-      "fixAvailable": {
-        "name": "next-auth",
-        "version": "4.24.7",
-        "isSemVerMajor": true
-      }
-    },
-    "next-auth": {
-      "name": "next-auth",
-      "severity": "high",
-      "isDirect": true,
-      "via": [
-        "@auth/core"
-      ],
-      "effects": [],
-      "range": "<=0.0.0-pr.11562.ed0fce23 || 4.24.8 - 5.0.0-beta.31",
-      "nodes": [
-        "node_modules/next-auth"
-      ],
-      "fixAvailable": {
-        "name": "next-auth",
-        "version": "4.24.7",
-        "isSemVerMajor": true
-      }
-    }
-  },
+  "vulnerabilities": {},
   "metadata": {
     "vulnerabilities": {
       "info": 0,
       "low": 0,
       "moderate": 0,
-      "high": 1,
-      "critical": 1,
-      "total": 2
+      "high": 0,
+      "critical": 0,
+      "total": 0
     },
     "dependencies": {
       "prod": 117,
-      "dev": 390,
-      "optional": 69,
-      "peer": 6,
+      "dev": 386,
+      "optional": 63,
+      "peer": 0,
       "peerOptional": 0,
-      "total": 547
+      "total": 537
     }
   }
 }
