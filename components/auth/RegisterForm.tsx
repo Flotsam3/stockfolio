@@ -115,8 +115,11 @@ export default function RegisterPage() {
                            </div>
                            <input
                               id="name"
-                              type="text"
-                              required
+                               type="text"
+                               required
+                               minLength={2}
+                               maxLength={80}
+                               autoComplete="name"
                               value={name}
                               onChange={(e) => setName(e.target.value)}
                               className="block w-full pl-10 pr-3 py-3 bg-[#161616] border border-[#33313c] rounded-lg focus:outline-none focus:border-[#facc15] transition-colors text-white placeholder-gray-500"
@@ -136,8 +139,10 @@ export default function RegisterPage() {
                            </div>
                            <input
                               id="email"
-                              type="email"
-                              required
+                               type="email"
+                               required
+                               maxLength={254}
+                               autoComplete="email"
                               value={email}
                               onChange={(e) => setEmail(e.target.value)}
                               className="block w-full pl-10 pr-3 py-3 bg-[#161616] border border-[#33313c] rounded-lg focus:outline-none focus:border-[#facc15] transition-colors text-white placeholder-gray-500"
@@ -157,8 +162,11 @@ export default function RegisterPage() {
                            </div>
                            <input
                               id="password"
-                              type={showPassword ? "text" : "password"}
-                              required
+                               type={showPassword ? "text" : "password"}
+                               required
+                               minLength={8}
+                               maxLength={72}
+                               autoComplete="new-password"
                               value={password}
                               onChange={(e) => setPassword(e.target.value)}
                               className="block w-full pl-10 pr-10 py-3 bg-[#161616] border border-[#33313c] rounded-lg focus:outline-none focus:border-[#facc15] transition-colors text-white placeholder-gray-500"
@@ -189,8 +197,11 @@ export default function RegisterPage() {
                            </div>
                            <input
                               id="confirmPassword"
-                              type={showConfirmPassword ? "text" : "password"}
-                              required
+                               type={showConfirmPassword ? "text" : "password"}
+                               required
+                               minLength={8}
+                               maxLength={72}
+                               autoComplete="new-password"
                               value={confirmPassword}
                               onChange={(e) => setConfirmPassword(e.target.value)}
                               className="block w-full pl-10 pr-10 py-3 bg-[#161616] border border-[#33313c] rounded-lg focus:outline-none focus:border-[#facc15] transition-colors text-white placeholder-gray-500"

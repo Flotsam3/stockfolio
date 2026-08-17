@@ -52,7 +52,10 @@ export async function PATCH(request: Request) {
          return Response.json({ error: "Current password is incorrect" }, { status: 403 });
       }
 
-      const existingUser = await User.findOne({ email: normalizedEmail, _id: { $ne: userId } });
+      const existingUser = await User.findOne({
+         email: normalizedEmail,
+         _id: { $ne: userId },
+      }).collation({ locale: "en", strength: 2 });
       if (existingUser) {
          return Response.json({ error: "Email is already in use" }, { status: 409 });
       }

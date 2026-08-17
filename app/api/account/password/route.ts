@@ -1,4 +1,5 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { getPasswordValidationError } from "@/libs/authValidation";
 import { connectDB } from "@/libs/connectDB";
 import User from "@/models/User";
 import bcrypt from "bcrypt";
@@ -25,12 +26,13 @@ export async function PATCH(request: Request) {
 
       const { currentPassword, newPassword } = await request.json();
 
-      if (!currentPassword || !newPassword) {
+      if (typeof currentPassword !== "string" || typeof newPassword !== "string" || !currentPassword || !newPassword) {
          return Response.json({ error: "Current and new password are required" }, { status: 400 });
       }
 
-      if (newPassword.length < 8) {
-         return Response.json({ error: "New password must be at least 8 characters" }, { status: 400 });
+      const passwordError = getPasswordValidationError(newPassword);
+      if (passwordError) {
+         return Response.json({ error: passwordError }, { status: 400 });
       }
 
       const user = await User.findById(userId);

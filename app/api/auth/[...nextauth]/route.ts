@@ -3,8 +3,11 @@ import NextAuth, { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import GitHubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { isValidEmail, normalizeEmail } from "@/libs/authValidation";
 import clientPromise from "@/libs/mongodb";
 import bcrypt from "bcrypt";
+
+const isDevelopment = process.env.NODE_ENV === "development";
 
 declare module "next-auth" {
   interface Session {
@@ -22,7 +25,7 @@ declare module "next-auth" {
 }
 
 export const authOptions: NextAuthOptions = {
-  debug: true,
+  debug: isDevelopment,
 
   providers: [
     GoogleProvider({
@@ -42,16 +45,22 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
+        if (typeof credentials?.email !== "string" || typeof credentials?.password !== "string") {
+          throw new Error("Invalid credentials");
+        }
+
+        const email = normalizeEmail(credentials.email);
+        if (!isValidEmail(email)) {
           throw new Error("Invalid credentials");
         }
 
         const client = await clientPromise;
         const db = client.db(process.env.DATABASE);
 
-        const user = await db.collection("users").findOne({
-          email: credentials.email,
-        });
+        const user = await db.collection("users").findOne(
+          { email },
+          { collation: { locale: "en", strength: 2 } }
+        );
 
         if (!user || !user.password) {
           throw new Error("Invalid credentials");
@@ -85,36 +94,54 @@ export const authOptions: NextAuthOptions = {
 
   callbacks: {
     async signIn({ user, account }) {
-      console.log("🔐 Sign in attempt:", { user, provider: account?.provider });
-
       // For OAuth logins, create/update user in database
       if (account?.provider === "google" || account?.provider === "github") {
         try {
+          if (typeof user.email !== "string") {
+            return false;
+          }
+
+          const email = normalizeEmail(user.email);
+          if (!isValidEmail(email)) {
+            return false;
+          }
+
           const client = await clientPromise;
           const db = client.db(process.env.DATABASE);
 
-          const existingUser = await db.collection("users").findOne({
-            email: user.email,
-          });
+          const existingUser = await db.collection("users").findOne(
+            { email },
+            { collation: { locale: "en", strength: 2 } }
+          );
 
           if (!existingUser) {
             // Create new user
             const result = await db.collection("users").insertOne({
               name: user.name,
-              email: user.email,
+              email,
               image: user.image,
               emailVerified: null,
               createdAt: new Date(),
               updatedAt: new Date(),
             });
             user.id = result.insertedId.toString();
-            console.log("🆕 Created new OAuth user:", user.id);
           } else {
             user.id = existingUser._id.toString();
-            console.log("✅ Found existing user:", user.id);
+
+            if (existingUser.email !== email) {
+              await db.collection("users").updateOne(
+                { _id: existingUser._id },
+                { $set: { email, updatedAt: new Date() } }
+              );
+            }
           }
+
+          user.email = email;
         } catch (error) {
-          console.error("❌ Error in signIn callback:", error);
+          console.error(
+            "OAuth sign-in callback failed:",
+            isDevelopment && error instanceof Error ? error.message : "Internal error"
+          );
           return false;
         }
       }
@@ -124,7 +151,6 @@ export const authOptions: NextAuthOptions = {
 
     async jwt({ token, user }) {
       if (user) {
-        console.log("📝 Creating JWT for user:", user.id);
         token.id = user.id;
         token.email = user.email;
         token.name = user.name;
@@ -134,7 +160,6 @@ export const authOptions: NextAuthOptions = {
     },
 
     async session({ session, token }) {
-      console.log("👤 Creating session for token:", token.id);
       if (session.user) {
         session.user.id = token.id as string;
         session.user.email = token.email as string;
@@ -145,8 +170,6 @@ export const authOptions: NextAuthOptions = {
     },
 
     async redirect({ url, baseUrl }) {
-      console.log("🔄 Redirect called:", { url, baseUrl });
-
       if (url.includes("/signout") || url.includes("/logout")) {
         return `${baseUrl}/auth/login`;
       }
@@ -163,15 +186,6 @@ export const authOptions: NextAuthOptions = {
     },
   },
 
-  events: {
-    async signIn({ user, account, isNewUser }) {
-      console.log("✅ User signed in:", {
-        userId: user.id,
-        isNewUser,
-        provider: account?.provider,
-      });
-    },
-  },
 };
 
 const handler = NextAuth(authOptions);
