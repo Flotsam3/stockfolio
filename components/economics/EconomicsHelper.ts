@@ -1,138 +1,15 @@
-import { Dispatch, SetStateAction } from "react";
 import { getEconomics } from "@/services/economics";
-import { postEconomics } from "@/services/economics";
-import { updateEconomics } from "@/services/economics";
-import { DateTime } from "luxon";
-import { getInflation } from "@/libs/api";
-import { getCpi } from "@/libs/api";
-import { getInterest } from "@/libs/api";
-import { getUnemployment } from "@/libs/api";
-import { EconomicsType } from "@/types/types.js";
-import { EconomicEntry } from "@/types/types.js";
-import Cookies from "js-cookie";
+import type { EconomicsType } from "@/types/types";
+import type { Dispatch, SetStateAction } from "react";
 
-export async function prepareEconomics(setEconomics: Dispatch<SetStateAction<EconomicsType>>) {   
-   try {
-      const { response } = await getEconomics();
-      setEconomics(response[0]);
-      console.log("response getEconomics", response.length, response);
-      if (response.length === 0) {
-         console.log("no economics!");
-         const updateData = await processUpdateData();
-         console.log({ updateData });
-         if (updateData) await postEconomics(updateData);
-      } else {
-         const hasCookie = Cookies.get("eco");
-         if (hasCookie) return console.log("Data already fetched for today!");
+export async function prepareEconomics(setEconomics: Dispatch<SetStateAction<EconomicsType>>) {
+   const { response } = await getEconomics();
+   const economics = response?.[0];
 
-         const dbDateCpi = response[0].cpi[0].date;
-         const dbDate_1 = DateTime.fromISO(dbDateCpi, { zone: "utc" });
-
-         const now = DateTime.utc();
-         const oneMonthAgo = now.minus({ months: 1 });
-
-         console.log({ dbDate_1, oneMonthAgo }, "more than 1 month ago:", dbDate_1 < oneMonthAgo);
-
-         if (dbDate_1 < oneMonthAgo) {
-            console.log("Time to update");
-
-            const updateData = await processUpdateData();
-
-            if (!updateData) throw new Error("No updated economics data");
-
-            const updatedData = await updateEconomics(updateData, response[0]._id);
-            console.log({ updatedData });
-            setEconomics(updatedData);
-         } else {
-            console.log("Not yet one month since last update");
-         }
-
-         Cookies.set("eco", "daily", { expires: 1 }); // Expires in 1 day
-      }
-   } catch (error) {
-      console.log(error);
-      return error;
-   }
-}
-
-async function processUpdateData() {
-   const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
-   try {
-      console.log("Fetching inflation...");
-      const inflation = await getInflation();
-      
-      await delay(1100); // Wait 1.1 seconds (Alpha Vantage limits to 1 request per second)
-      console.log("Fetching CPI...");
-      const cpi = await getCpi();
-      
-      await delay(1100);
-      console.log("Fetching interest...");
-      const interest = await getInterest();
-      
-      await delay(1100);
-      console.log("Fetching unemployment...");
-      const unemployment = await getUnemployment();
-
-       // ADD THESE DEBUG LOGS
-      console.log("=== API Response Debug ===");
-      console.log("inflation:", JSON.stringify(inflation, null, 2));
-      console.log("cpi:", JSON.stringify(cpi, null, 2));
-      console.log("interest:", JSON.stringify(interest, null, 2));
-      console.log("unemployment:", JSON.stringify(unemployment, null, 2));
-      console.log("========================");
-
-      if (!Array.isArray(inflation?.data)) throw new Error("Invalid inflation data format");
-      if (!Array.isArray(cpi?.data)) throw new Error("Invalid CPI data format");
-      if (!Array.isArray(interest?.data)) throw new Error("Invalid interest data format");
-      if (!Array.isArray(unemployment?.data)) throw new Error("Invalid unemployment data format");
-
-      return {
-         inflation: processInflationData(inflation.data),
-         cpi: processCpi(cpi.data),
-         interest: processInterest(interest.data),
-         unemployment: processUnemployment(unemployment.data),
-      };
-   } catch (error) {
-      console.log(error);
-   }
-}
-
-function processInflationData(inflationData: EconomicEntry[]) {
-   const data = inflationData.splice(0, 2);
-   return data;
-}
-
-function processCpi(cpiData: EconomicEntry[]) {
-   const dataSlice = cpiData.splice(0, 12);
-
-   if (dataSlice.length < 2) throw new Error("The cpiData array needs at least two elements!");
-   const lastEntry = dataSlice.at(-1);
-   if (!lastEntry) {
-      throw new Error("The last entry is undefined!");
+   if (!economics) {
+      throw new Error("No economics data available");
    }
 
-   const inflationMonth = (
-      ((+dataSlice[0].value - +dataSlice[1].value) / +dataSlice[1].value) *
-      100
-   ).toFixed(2);
-   const inflationYear = (
-      ((+dataSlice[0].value - +lastEntry.value) / +lastEntry.value) *
-      100
-   ).toFixed(2);
-   const data = [
-      { value: inflationMonth, date: dataSlice[0].date },
-      { value: inflationYear, date: lastEntry.date },
-   ];
-   return data;
-}
-
-function processInterest(interestData: EconomicEntry[]) {
-   const data = interestData.splice(0, 2);
-   return data;
-}
-
-function processUnemployment(unemploymentData: EconomicEntry[]) {
-   const data = unemploymentData.splice(0, 2);
-   return data;
+   setEconomics(economics);
+   return economics;
 }

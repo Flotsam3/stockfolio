@@ -1,4 +1,6 @@
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { JSDOM } from "jsdom";
+import { getServerSession } from "next-auth";
 import { NextRequest } from "next/server";
 
 async function fetchFinvizEpsGrowth5Y(ticker: string): Promise<string | null> {
@@ -27,6 +29,11 @@ async function fetchFinvizEpsGrowth5Y(ticker: string): Promise<string | null> {
 
 export async function GET(request: NextRequest) {
    try {
+      const session = await getServerSession(authOptions);
+      if (!session?.user?.id) {
+         return Response.json({ error: "Not authenticated" }, { status: 401 });
+      }
+
       const { searchParams } = new URL(request.url);
       const ticker = searchParams.get("ticker") || "pypl";
 
