@@ -41,6 +41,8 @@ NEXT_PUBLIC_ALPHA_VANTAGE_KEY=your_alpha_vantage_api_key
 NEXT_PUBLIC_BASE_URL=http://localhost:3000
 ```
 
+`MONGO_URL` is a server-only runtime requirement for authentication and database operations. MongoDB connections are initialized on the first database request, so `npm run build` does not require a database connection. For Vercel deployments, configure `MONGO_URL` and `DATABASE` for the environment being deployed (Preview or Production); a successful build alone does not verify database access.
+
 ### Alpha Vantage API
 
 Stockfolio uses the [Alpha Vantage API](https://www.alphavantage.co/) throughout the app to fetch real-time stock data, historical prices, technical indicators, and more.

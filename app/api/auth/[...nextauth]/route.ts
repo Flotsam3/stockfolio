@@ -4,7 +4,7 @@ import GoogleProvider from "next-auth/providers/google";
 import GitHubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { isValidEmail, normalizeEmail } from "@/libs/authValidation";
-import clientPromise from "@/libs/mongodb";
+import getMongoClient from "@/libs/mongodb";
 import bcrypt from "bcrypt";
 
 const isDevelopment = process.env.NODE_ENV === "development";
@@ -54,7 +54,7 @@ export const authOptions: NextAuthOptions = {
           throw new Error("Invalid credentials");
         }
 
-        const client = await clientPromise;
+        const client = await getMongoClient();
         const db = client.db(process.env.DATABASE);
 
         const user = await db.collection("users").findOne(
@@ -106,7 +106,7 @@ export const authOptions: NextAuthOptions = {
             return false;
           }
 
-          const client = await clientPromise;
+          const client = await getMongoClient();
           const db = client.db(process.env.DATABASE);
 
           const existingUser = await db.collection("users").findOne(
