@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState } from 'react';
-import { getIncomeStatement, getBalanceSheet, getCashFlow, getMonthlyStock } from '@/libs/api';
+import { getIncomeStatement, getBalanceSheet, getCashFlow, getMonthlyStock } from '@/services/fundamentals';
 import { useStockContext } from '@/context/StockContext';
 import toast, { Toaster } from 'react-hot-toast';
 import { getCompany, createCompany, updateCompany } from '@/services/company';
@@ -12,9 +12,6 @@ import { processProfitability } from '../../../libs/fundamentals/processProfitab
 import { processValuation } from '../../../libs/fundamentals/processValuation';
 import { Profitability, EfficiencyAndLeverage, Liquidity, Valuation } from '@/types/types';
 import AnalysisInfo from '@/components/analysis/AnalysisInfo';
-
-// const API_KEY: string = process.env.NEXT_PUBLIC_ALPHA_VANTAGE_KEY || "";
-// const BASE_URL: string = process.env.NEXT_PUBLIC_BASE_URL || "";
 
 export default function Fundamentals() {
   const { stockData } = useStockContext();
@@ -128,10 +125,11 @@ export default function Fundamentals() {
         setValuation({ epsAnnual: updatedData.valuation.epsAnnual, epsQuarterly: updatedData.valuation.epsQuarterly, peRatioAnnual: updatedData.valuation.peRatioAnnual, peRatioQuarterly: updatedData.valuation.peRatioQuarterly });
       }
 
-      setIsLoading(false);
-
     } catch (error) {
       console.log(error);
+      toast.error("Loading company data failed. Please try again later.");
+    } finally {
+      setIsLoading(false);
     }
   }
 
