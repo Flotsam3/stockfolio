@@ -37,7 +37,7 @@ Before running the app, you’ll need to set up a `.env.local` file in the root 
 ```env
 MONGO_URL=your_mongodb_connection_string
 DATABASE=your_database_name
-NEXT_PUBLIC_ALPHA_VANTAGE_KEY=your_alpha_vantage_api_key
+ALPHA_VANTAGE_KEY=your_alpha_vantage_api_key
 NEXT_PUBLIC_BASE_URL=http://localhost:3000
 ```
 
@@ -51,7 +51,9 @@ To use this app, you’ll need to:
 
 1. Create a free account at [Alpha Vantage](https://www.alphavantage.co/support/#api-key)
 2. Generate your API key
-3. Paste it into your `.env.local` file as `NEXT_PUBLIC_ALPHA_VANTAGE_KEY`
+3. Configure it in `.env.local` or your deployment environment as the server-only `ALPHA_VANTAGE_KEY`. It is used by both fundamentals and the existing economics refresh. Do not use the former `NEXT_PUBLIC_ALPHA_VANTAGE_KEY` name: public Next.js variables are included in browser bundles. There is no fallback to that public variable. Configure the private variable before deploying this change; the application code does not change or rotate the key value.
+
+Fundamentals requests use the existing NextAuth session through `/api/fundamentals`. Only the four supported data functions and a validated stock symbol are accepted. Provider failures return generic errors without provider URLs or credentials. See [SF-02](docs/security/SF-02.md) for the exposure proof, provider usage assumptions, and remaining account checks.
 
 ---
 
