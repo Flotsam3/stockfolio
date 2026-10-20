@@ -7,7 +7,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "next typegen && tsc --noEmit",
+    "test": "node --test tests/*.test.mjs",
+    "prepare": "husky",
+    "release": "semantic-release",
+    "release:dry-run": "semantic-release --dry-run --no-ci"
   },
   "dependencies": {
     "@auth/mongodb-adapter": "3.11.3",
@@ -42,6 +46,14 @@
     }
   },
   "devDependencies": {
+    "@commitlint/cli": "^21.2.4",
+    "@commitlint/config-conventional": "^21.2.4",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/commit-analyzer": "^13.0.1",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^12.0.10",
+    "@semantic-release/npm": "^13.2.0",
+    "@semantic-release/release-notes-generator": "^14.1.1",
     "@types/bcrypt": "^6.0.0",
     "@types/js-cookie": "^3.0.6",
     "@types/jsdom": "^21.1.7",
@@ -49,9 +61,12 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "conventional-changelog-conventionalcommits": "^9.3.1",
     "eslint": "9.39.5",
     "eslint-config-next": "16.3.3",
+    "husky": "^9.1.7",
     "postcss": "8.5.23",
+    "semantic-release": "^25.0.9",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
   }

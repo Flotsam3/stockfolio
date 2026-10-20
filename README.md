@@ -70,10 +70,10 @@ cd stockfolio
 
 ### 2. Install dependencies
 
+Use Node.js 24.13.1 (see `.nvmrc`).
+
 ```bash
-npm install
-# or
-yarn install
+npm ci
 ```
 
 ### 3. Set up environment variables
@@ -91,6 +91,20 @@ yarn dev
 Open [http://localhost:3000](http://localhost:3000) in your browser to view the app.
 
 ---
+
+## CI and releases
+
+Pull requests against `main` and pushes to `main` run commit checks, ESLint,
+TypeScript, tests and a production build. Releases run only after successful CI.
+Vercel keeps its existing Git deployment integration.
+
+See [release setup and first activation](docs/releases.md) and
+[validation results](docs/ci-release-validation.md). Release automation requires
+the deliberately initialized `v1.1.0` baseline tag. Each release synchronizes
+`package.json`, `package-lock.json` and `CHANGELOG.md` in a metadata commit.
+Vercel's ignored build step skips only verified metadata-only release commits;
+the release job first requires a successful production deployment of the exact
+source commit, then checks that this commit is still the current `main`.
 
 ## License
 

@@ -1,0 +1,131 @@
+name: CI and Release
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+env:
+  # Verification already runs the hooks' checks; the bot's release commit skips them.
+  HUSKY: '0'
+  NEXT_TELEMETRY_DISABLED: '1'
+
+jobs:
+  verify:
+    name: Stockfolio verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      - name: Check Conventional Commits
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_BASE: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD: ${{ github.event.pull_request.head.sha }}
+          PUSH_BEFORE: ${{ github.event.before }}
+        shell: bash
+        run: |
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            printf '%s\n' "$PR_TITLE" | npx --no -- commitlint
+            npx --no -- commitlint --from "$PR_BASE" --to "$PR_HEAD"
+          elif [ "$PUSH_BEFORE" != "0000000000000000000000000000000000000000" ]; then
+            npx --no -- commitlint --from "$PUSH_BEFORE" --to "$GITHUB_SHA"
+          else
+            git log -1 --format=%B | npx --no -- commitlint
+          fi
+
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+
+  release:
+    name: Stockfolio release
+    needs: verify
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+      deployments: read
+      statuses: read
+    concurrency:
+      group: stockfolio-release-${{ github.ref }}
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          # @semantic-release/git pushes the metadata commit back to main.
+          persist-credentials: true
+
+      - name: Verify initial release baseline
+        shell: bash
+        run: |
+          if ! git show-ref --verify --quiet refs/tags/v1.1.0; then
+            echo "::error::Missing v1.1.0 baseline tag. Follow docs/releases.md before activating releases."
+            exit 1
+          fi
+          if ! git merge-base --is-ancestor refs/tags/v1.1.0 HEAD; then
+            echo "::error::The v1.1.0 baseline tag must be an ancestor of this main commit."
+            exit 1
+          fi
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      # A new metadata push must not supersede a still queued Vercel source build.
+      - name: Wait for the production source deployment
+        id: production_deployment
+        # Reviewed 2026-10-20; upstream main at this immutable commit (Node 24).
+        uses: vercel/wait-for-deployment-action@0e2b0c5c5cce31f1648108aeec56467187aca037
+        with:
+          environment: production
+          sha: ${{ github.sha }}
+          status-context: Vercel
+          require-deployment-id: 'true'
+          timeout: '600'
+          check-interval: '15'
+
+      # Upstream also accepts inactive/skipped deployments; releases require success.
+      - name: Require a successful production deployment
+        env:
+          DEPLOYMENT_STATE: ${{ steps.production_deployment.outputs.deployment-state }}
+        shell: bash
+        run: |
+          if [ "$DEPLOYMENT_STATE" != "success" ]; then
+            echo "::error::The exact source SHA needs a successful Production deployment; inactive or skipped is insufficient."
+            exit 1
+          fi
+
+      - name: Run semantic-release
+        shell: bash
+        run: |
+          remote_sha=$(git ls-remote --exit-code origin refs/heads/main | cut -f1)
+          if [ "$(git rev-parse HEAD)" != "$GITHUB_SHA" ] || [ "$remote_sha" != "$GITHUB_SHA" ]; then
+            echo "::error::Stale release run: main has advanced or checkout does not match the verified source SHA."
+            exit 1
+          fi
+          npm run release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
