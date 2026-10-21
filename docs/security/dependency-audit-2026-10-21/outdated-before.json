@@ -1,0 +1,102 @@
+{
+  "@types/jsdom": {
+    "current": "21.1.7",
+    "wanted": "21.1.7",
+    "latest": "30.0.0"
+  },
+  "@types/luxon": {
+    "current": "3.7.2",
+    "wanted": "3.7.6",
+    "latest": "3.7.6"
+  },
+  "@types/node": {
+    "current": "20.19.43",
+    "wanted": "20.19.43",
+    "latest": "26.6.5"
+  },
+  "@types/react": {
+    "current": "19.2.17",
+    "wanted": "19.3.0",
+    "latest": "19.3.0"
+  },
+  "@types/react-dom": {
+    "current": "19.2.3",
+    "wanted": "19.3.0",
+    "latest": "19.3.0"
+  },
+  "conventional-changelog-conventionalcommits": {
+    "current": "9.3.1",
+    "wanted": "9.3.1",
+    "latest": "10.4.1"
+  },
+  "eslint": {
+    "current": "9.39.5",
+    "wanted": "9.39.5",
+    "latest": "10.13.0"
+  },
+  "eslint-config-next": {
+    "current": "16.3.3",
+    "wanted": "16.3.3",
+    "latest": "16.4.2"
+  },
+  "jsdom": {
+    "current": "26.1.0",
+    "wanted": "26.1.0",
+    "latest": "29.1.1"
+  },
+  "lucide-react": {
+    "current": "0.546.0",
+    "wanted": "0.546.0",
+    "latest": "1.61.0"
+  },
+  "mongodb": {
+    "current": "6.21.0",
+    "wanted": "6.21.0",
+    "latest": "7.7.0"
+  },
+  "mongoose": {
+    "current": "8.24.1",
+    "wanted": "8.24.6",
+    "latest": "9.11.2"
+  },
+  "next": {
+    "current": "16.3.3",
+    "wanted": "16.3.3",
+    "latest": "16.4.2"
+  },
+  "postcss": {
+    "current": "8.5.23",
+    "wanted": "8.5.23",
+    "latest": "8.5.31"
+  },
+  "react": {
+    "current": "19.0.0",
+    "wanted": "19.0.0",
+    "latest": "19.3.1"
+  },
+  "react-dom": {
+    "current": "19.0.0",
+    "wanted": "19.0.0",
+    "latest": "19.3.1"
+  },
+  "react-hot-toast": {
+    "current": "2.6.0",
+    "wanted": "2.6.1",
+    "latest": "2.6.1"
+  },
+  "sharp": {
+    "current": "0.35.4",
+    "wanted": "0.35.4",
+    "latest": "0.35.5"
+  },
+  "tailwindcss": {
+    "current": "3.4.19",
+    "wanted": "3.4.19",
+    "latest": "4.3.3"
+  },
+  "typescript": {
+    "current": "5.9.3",
+    "wanted": "5.9.3",
+    "latest": "7.0.2"
+  }
+}

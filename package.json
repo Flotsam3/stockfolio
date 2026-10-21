@@ -23,26 +23,27 @@
     "luxon": "^3.5.0",
     "mongodb": "^6.21.0",
     "mongoose": "^8.21.1",
-    "next": "16.3.3",
+    "next": "16.3.8",
     "next-auth": "4.24.15",
-    "react": "19.0.0",
-    "react-dom": "19.0.0",
+    "react": "19.0.9",
+    "react-dom": "19.0.9",
     "react-hot-toast": "^2.4.1",
-    "sharp": "0.35.4"
+    "sharp": "0.35.5"
   },
   "overrides": {
     "@auth/core": {
       ".": "0.41.3",
       "cookie": "0.7.0"
     },
-    "brace-expansion": "5.0.9",
+    "brace-expansion": "5.0.12",
     "cookie": "0.7.0",
     "minimatch": "10.2.5",
-    "postcss": "8.5.23",
+    "postcss": "8.5.31",
+    "postcss-selector-parser": "7.1.6",
     "uuid": "11.1.1",
     "next": {
-      "postcss": "8.5.23",
-      "sharp": "0.35.4"
+      "postcss": "8.5.31",
+      "sharp": "0.35.5"
     }
   },
   "devDependencies": {
@@ -63,9 +64,9 @@
     "@types/react-dom": "^19",
     "conventional-changelog-conventionalcommits": "^9.3.1",
     "eslint": "9.39.5",
-    "eslint-config-next": "16.3.3",
+    "eslint-config-next": "16.3.8",
     "husky": "^9.1.7",
-    "postcss": "8.5.23",
+    "postcss": "8.5.31",
     "semantic-release": "^25.0.9",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
