@@ -243,11 +243,11 @@ export default function WatchListPanel({ watchList, stockData, setStockData }: {
                               </div>
                               <div className="sm:col-span-1 [&>*]:text-center">
                                  <p>Price (USD)</p>
-                                 <p title={describeStockAmount(obj.quoteOriginal, tradingPrice === null ? obj.rate : undefined)}>{formatUsd(tradingPrice)}</p>
+                                 <p title={describeStockAmount(obj.quoteOriginal, tradingPrice === null ? obj.rate : undefined)}>{formatUsd(tradingPrice, 2)}</p>
                               </div>
                               <div className="sm:col-span-1 [&>*]:text-center">
                                  <p>EPS (USD)</p>
-                                 <p title={describeStockAmount(obj.epsOriginal, eps === null ? obj.dilutedEps : undefined)}>{formatUsd(eps)}</p>
+                                 <p title={describeStockAmount(obj.epsOriginal, eps === null ? obj.dilutedEps : undefined)}>{formatUsd(eps, 2)}</p>
                               </div>
                            </>
                         )}
