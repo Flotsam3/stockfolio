@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.1.4](https://github.com/Flotsam3/stockfolio/compare/v1.1.3...v1.1.4) (2026-11-25)
+
+### Bug Fixes
+
+* **watchlist:** round stock prices and EPS to two decimal places ([2d49082](https://github.com/Flotsam3/stockfolio/commit/2d490828500dd64c9a05da6642a4eb7e66825050))
+
 ## [1.1.3](https://github.com/Flotsam3/stockfolio/compare/v1.1.2...v1.1.3) (2026-11-25)
 
 ### Bug Fixes
