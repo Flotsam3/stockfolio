@@ -2,7 +2,6 @@
 
 import React, { useState, Dispatch, SetStateAction } from 'react';
 import { StockData } from '@/types/types';
-import { getStockPortfolio } from '@/services/dashboard';
 import { AddStockType } from '@/types/types';
 import { postNewWatchList } from '@/services/dashboard';
 import toast, {Toaster} from "react-hot-toast";
@@ -13,9 +12,9 @@ export default function AddStock({setStockData, stockData}:{setStockData: Dispat
         ticker:"",
         isin:"",
         country:"",
-        rate:0,
-        dilutedEps: 0,
-        growthForecast: 0,
+        rate: null,
+        dilutedEps: null,
+        growthForecast: null,
         peRatio:""
     });
 
@@ -24,26 +23,22 @@ export default function AddStock({setStockData, stockData}:{setStockData: Dispat
     async function handleForm(evt: React.MouseEvent<HTMLButtonElement>){
         try {
             evt.preventDefault();
-            console.log("stockData name", stockData.name);
             if (!stockData.name) return notify();
-            // if (!input.name || !input.ticker || !input.isin || !input.country || !input.peRatio) return;
             if (!input.name || !input.ticker || !input.isin || !input.country) return;
-            await postNewWatchList(input, stockData.name, stockData.anualTargetReturn);
-            const data = await getStockPortfolio();
-            if (!data) return console.log("Error while fetching stock data!");
-            setStockData(data);
+            const data = await postNewWatchList(input, stockData.name);
+            setStockData(current => current._id === data._id ? data : current);
             setInput({
                 name:"",
                 ticker:"",
                 isin:"",
                 country:"",
-                rate:0,
-                dilutedEps: 0,
-                growthForecast: 0,
+                rate: null,
+                dilutedEps: null,
+                growthForecast: null,
                 peRatio:""
             })
         } catch (error) {
-            console.log(error);
+            toast.error(error instanceof Error ? error.message : "Could not add the stock.");
         }
     }
     
@@ -55,7 +50,7 @@ export default function AddStock({setStockData, stockData}:{setStockData: Dispat
                 <input type="text" name='stock' onChange={(evt)=>setInput({...input, name:evt.target.value})} value={input.name}/>
             </label>
             <label>Ticker
-                <input type="text" name='ticker' onChange={(evt)=>setInput({...input, ticker:evt.target.value})} value={input.ticker}/>
+                <input type="text" name='ticker' placeholder="NVDA or CPH:JYSK" onChange={(evt)=>setInput({...input, ticker:evt.target.value})} value={input.ticker}/>
             </label>
             <label>ISIN
                 <input type="text" name='isin' onChange={(evt)=>setInput({...input, isin:evt.target.value})} value={input.isin}/>
@@ -63,14 +58,14 @@ export default function AddStock({setStockData, stockData}:{setStockData: Dispat
             <label>Country Code
                 <input type="text" maxLength={2} name='country' onChange={(evt)=>setInput({...input, country:evt.target.value})} value={input.country}/>
             </label>
-            <label>Rate ($)
-                <input type="number" name='rate' onChange={(evt)=>setInput({...input, rate:+evt.target.value})} value={input.rate}/>
+            <label>Price (USD)
+                <input type="number" step="any" name='rate' onChange={(evt)=>setInput({...input, rate:evt.target.value === "" ? null : evt.target.valueAsNumber})} value={input.rate ?? ""}/>
             </label>
-            <label title='yahoo.com/statistiken/GuV'>Diluted EPS (ttm)
-                <input type="number" name='eps-diluted' onChange={(evt)=>setInput({...input, dilutedEps:+evt.target.value})} value={input.dilutedEps}/>
+            <label title='yahoo.com/statistiken/GuV'>Diluted EPS (TTM, USD)
+                <input type="number" step="any" name='eps-diluted' onChange={(evt)=>setInput({...input, dilutedEps:evt.target.value === "" ? null : evt.target.valueAsNumber})} value={input.dilutedEps ?? ""}/>
             </label>
             <label title='stockanalysis.com/stocks/statistics/Analyst-Forecast'>5-year earnings growth forecast
-                <input type="number" name='growth-forecast' onChange={(evt)=>setInput({...input, growthForecast:+evt.target.value})} value={input.growthForecast}/>
+                <input type="number" step="any" name='growth-forecast' onChange={(evt)=>setInput({...input, growthForecast:evt.target.value === "" ? null : evt.target.valueAsNumber})} value={input.growthForecast ?? ""}/>
             </label>
             <label title='stockanalysis.com/stocks/financials/ratios'>PE Ratio (semicolon separated)
                 <input type="text" name='pe-ratio' onChange={(evt)=>setInput({...input, peRatio:evt.target.value})} value={input.peRatio}/>

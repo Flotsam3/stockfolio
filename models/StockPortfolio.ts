@@ -1,5 +1,25 @@
 import {Schema, model, models} from "mongoose";
 
+const exchangeRateSchema = new Schema({
+   usdPerUnit: { type: Number, required: true },
+   date: { type: String, required: true },
+   source: { type: String, enum: ["ECB"], required: true },
+}, { _id: false });
+
+const amountDetails = {
+   amount: { type: Number, required: true },
+   currency: String,
+   asOf: String,
+   source: { type: String, enum: ["stockanalysis", "manual"], required: true },
+   fx: exchangeRateSchema,
+};
+const amountDetailsSchema = new Schema(amountDetails, { _id: false });
+const amountInUsdSchema = new Schema({ ...amountDetails, usd: Number }, { _id: false });
+const refreshIssueSchema = new Schema({
+   code: { type: String, required: true },
+   message: { type: String, required: true },
+}, { _id: false });
+
 const watchListSchema = new Schema({
    name: {
       type: String,
@@ -16,21 +36,15 @@ const watchListSchema = new Schema({
       type: String,
       required: [true, "A country is required!"]
    },
-   rate: {
-      type: Number,
-      required: [true, "A stock rate is required!"]
-   },
-   dilutedEps: {
-      type: Number,
-      required: [true, "A value for diluted EPS (ttm) is required!"]
-   },
-   growthForecast: {
-      type: Number,
-      required: [true, "A growth forecast for the next 5 years is required!"]
-   },
+   rate: Number,
+   quoteOriginal: amountDetailsSchema,
+   dilutedEps: Number,
+   epsOriginal: amountDetailsSchema,
+   growthForecast: Number,
+   growthForecastSource: { type: String, enum: ["manual", "finviz", "stockanalysis"] },
    peRatio: {
       type: String,
-      required: [true, "A PE Ratio is required!"]
+      default: "",
    },
    peRatioAverage: Number,
    info: {
@@ -45,6 +59,12 @@ const watchListSchema = new Schema({
       type: Number,
       default: 0
    },
+   analystTarget: amountInUsdSchema,
+   upside: Number,
+   annualDividend: amountInUsdSchema,
+   dividendYield: Number,
+   lastPaidDividend: amountInUsdSchema,
+   refreshIssues: { type: [refreshIssueSchema], default: undefined },
    lastDataRefresh: {
       type: Date
    }

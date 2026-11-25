@@ -45,7 +45,7 @@ export default function SafetyOverview({ stockData }: { stockData: StockData }) 
       <div className="flex justify-between items-center py-2 px-3 hover:bg-gray-50 rounded transition-colors">
          <div className="flex items-center gap-3 flex-1">
             <span className="text-gray-500 font-medium w-6">{isTop ? index + 1 : totalStocks - index}</span>
-            <Link href={`/details/${stock.ticker}?name=${stock.name}`} className="hover:underline">
+            <Link href={`/details/${encodeURIComponent(stock.ticker)}?${new URLSearchParams({ name: stock.name })}`} className="hover:underline">
                <div>
                   <p className="font-bold text-sm">{stock.ticker}</p>
                   <p className="text-xs text-gray-600 truncate max-w-[150px]">{stock.name}</p>
@@ -67,7 +67,7 @@ export default function SafetyOverview({ stockData }: { stockData: StockData }) 
             </div>
             <div className="space-y-1">
                {top.map((stock, index) => (
-                  <StockRow key={stock.isin} stock={stock} index={index} isTop={true} />
+                  <StockRow key={stock._id ?? stock.ticker} stock={stock} index={index} isTop={true} />
                ))}
             </div>
          </div>
@@ -85,7 +85,7 @@ export default function SafetyOverview({ stockData }: { stockData: StockData }) 
                   </div>
                   <div className="space-y-1">
                      {bottom.map((stock, index) => (
-                        <StockRow key={stock.isin} stock={stock} index={index} isTop={false} />
+                        <StockRow key={stock._id ?? stock.ticker} stock={stock} index={index} isTop={false} />
                      ))}
                   </div>
                </div>

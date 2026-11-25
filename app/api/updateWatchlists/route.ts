@@ -1,137 +1,92 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { JSDOM } from "jsdom";
 import { getServerSession } from "next-auth";
-import { NextRequest } from "next/server";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { connectDB } from "@/libs/connectDB";
+import { fetchStockAnalysis, StockAnalysisError } from "@/libs/stockAnalysis/fetchStockAnalysis";
+import StockPortfolio from "@/models/StockPortfolio";
+import type { AddStockType } from "@/types/types";
+import { averagePeRatios } from "@/utils/stockCalculations";
 
-async function fetchFinvizEpsGrowth5Y(ticker: string): Promise<string | null> {
-   const response = await fetch(`https://finviz.com/quote.ashx?t=${encodeURIComponent(ticker)}&p=d`, {
-      headers: {
-         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36",
-         Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-      },
-   });
+const objectIdPattern = /^[a-f\d]{24}$/i;
 
-   if (!response.ok) {
-      console.warn(`Finviz request failed for ${ticker}: ${response.status}`);
-      return null;
+function failure(error: unknown) {
+   if (error instanceof StockAnalysisError) {
+      return Response.json({ code: error.code, error: error.message }, { status: error.status });
    }
-
-   const doc = new JSDOM(await response.text()).window.document;
-
-   for (const cell of doc.querySelectorAll("td")) {
-      if (cell.textContent?.trim() === "EPS next 5Y") {
-         return cell.nextElementSibling?.textContent?.trim() || null;
-      }
-   }
-
-   return null;
+   console.error("Stock Analysis refresh failed.");
+   return Response.json({ code: "REFRESH_ERROR", error: "Could not complete the stock refresh." }, { status: 500 });
 }
 
-export async function GET(request: NextRequest) {
+export async function GET(request: Request) {
    try {
       const session = await getServerSession(authOptions);
-      if (!session?.user?.id) {
-         return Response.json({ error: "Not authenticated" }, { status: 401 });
+      if (!session?.user?.id) return Response.json({ error: "Not authenticated" }, { status: 401 });
+
+      const tickers = new URL(request.url).searchParams.getAll("ticker");
+      if (tickers.length !== 1) throw new StockAnalysisError("INVALID_TICKER", "Provide one stock ticker.", 400);
+      const data = await fetchStockAnalysis(tickers[0]);
+      return Response.json(data, { headers: { "Cache-Control": "private, no-store" } });
+   } catch (error) {
+      return failure(error);
+   }
+}
+
+export async function POST(request: Request) {
+   try {
+      const session = await getServerSession(authOptions);
+      if (!session?.user?.id) return Response.json({ error: "Not authenticated" }, { status: 401 });
+
+      const body = await request.json().catch(() => null);
+      if (typeof body?.portfolioId !== "string" || !objectIdPattern.test(body.portfolioId) ||
+          typeof body.stockId !== "string" || !objectIdPattern.test(body.stockId)) {
+         return Response.json({ error: "Provide a valid watchlist and stock ID." }, { status: 400 });
       }
 
-      const { searchParams } = new URL(request.url);
-      const ticker = searchParams.get("ticker") || "pypl";
+      const stockId = body.stockId.toLowerCase();
+      const filter = { _id: body.portfolioId, userId: session.user.id };
+      await connectDB();
+      const portfolio = await StockPortfolio.findOne({ ...filter, "watchList._id": stockId }, { "watchList.$": 1 }).lean() as { watchList?: AddStockType[] } | null;
+      const stock = portfolio?.watchList?.[0];
+      if (!stock) return Response.json({ error: "Watchlist stock not found." }, { status: 404 });
 
-      console.log("Fetching data for ticker:", ticker);
-
-      // Parallel fetch for all source pages
-      const [ratiosHtml, financialsHtml, incomeStatementHtml, statsHtml, finvizEpsGrowth5Y] = await Promise.all([
-         fetch(`https://stockanalysis.com/stocks/${ticker}/financials/ratios/`).then((res) => res.text()),
-         fetch(`https://stockanalysis.com/stocks/${ticker}/financials/`).then((res) => res.text()),
-         fetch(`https://stockanalysis.com/stocks/${ticker}/financials/income-statement/`).then((res) => res.text()),
-         fetch(`https://stockanalysis.com/stocks/${ticker}/statistics/`).then((res) => res.text()),
-         fetchFinvizEpsGrowth5Y(ticker).catch((error) => {
-            console.warn(`Could not fetch EPS next 5Y from Finviz for ${ticker}:`, error);
-            return null;
-         }),
-      ]);
-
-      // Parse DOMs
-      const ratiosDoc = new JSDOM(ratiosHtml).window.document;
-      const financialsDoc = new JSDOM(financialsHtml).window.document;
-      const incomeStatementDoc = new JSDOM(incomeStatementHtml).window.document;
-      const statsDoc = new JSDOM(statsHtml).window.document;
-
-      // Check if page returned 404 or error
-      const notFound = ratiosDoc.querySelector("h1")?.textContent?.includes("404") || ratiosDoc.querySelector("h1")?.textContent?.includes("not found");
-
-      if (notFound) {
-         return Response.json({ error: `Stock ticker "${ticker}" not found on stockanalysis.com. This service only supports US-listed stocks.` }, { status: 404 });
+      const data = await fetchStockAnalysis(stock.ticker);
+      const { usd: rate, ...quoteOriginal } = data.quote;
+      const fields: Record<string, unknown> = {
+         "watchList.$.ticker": data.ticker,
+         "watchList.$.rate": rate,
+         "watchList.$.quoteOriginal": quoteOriginal,
+         "watchList.$.analystTarget": data.analystTarget,
+         "watchList.$.upside": data.upside,
+         "watchList.$.annualDividend": data.annualDividend,
+         "watchList.$.dividendYield": data.dividendYield,
+         "watchList.$.lastPaidDividend": data.lastPaidDividend,
+         "watchList.$.refreshIssues": data.issues,
+         "watchList.$.lastDataRefresh": new Date(),
+      };
+      if (data.eps) {
+         const { usd, ...epsOriginal } = data.eps;
+         fields["watchList.$.dilutedEps"] = usd;
+         fields["watchList.$.epsOriginal"] = epsOriginal;
+      }
+      if (data.peRatios.length > 0) {
+         fields["watchList.$.peRatio"] = data.peRatios.join(";");
+         fields["watchList.$.peRatioAverage"] = averagePeRatios(data.peRatios);
+      }
+      if (data.growthForecast) {
+         fields["watchList.$.growthForecast"] = data.growthForecast.percent;
+         fields["watchList.$.growthForecastSource"] = data.growthForecast.source;
       }
 
-      // Extract PE Ratios from ratios page
-      let peRatios: string[] = [];
-      for (const row of ratiosDoc.querySelectorAll("tr")) {
-         if (row.textContent?.includes("PE Ratio")) {
-            const cells = row.querySelectorAll("td");
-            peRatios = Array.from(cells)
-               .slice(2, 7)
-               .map((td) => td.textContent?.trim() || "");
-            break;
-         }
+      const updated = await StockPortfolio.findOneAndUpdate(
+         { ...filter, watchList: { $elemMatch: { _id: stockId, ticker: stock.ticker, updatedAt: stock.updatedAt ?? null } } },
+         { $set: fields },
+         { new: true, runValidators: true },
+      ).lean() as { watchList?: AddStockType[] } | null;
+      const saved = updated?.watchList?.find(item => String(item._id) === stockId);
+      if (!saved) {
+         return Response.json({ code: "STOCK_CHANGED", error: "The stock changed during the refresh. Please try again." }, { status: 409 });
       }
-
-      // Extract closing or real-time price
-      let realTimePrice: string | null = null;
-      const priceEl = ratiosDoc.querySelector("div.text-4xl.font-bold.transition-colors.duration-300.inline-block") || ratiosDoc.querySelector("div.text-4xl.font-bold.transition-colors.duration-300.block");
-
-      realTimePrice = priceEl?.textContent?.trim() || null;
-
-      // Extract after-hours price if available
-      let afterHoursPrice: string | null = null;
-      const afterHoursEl = ratiosDoc.querySelector("div.block.font-semibold.leading-5.text-faded");
-      afterHoursPrice = afterHoursEl?.textContent?.trim() || null;
-
-      // Extract EPS (Diluted) from the income statement page.
-      let epsDiluted: string = "";
-      for (const row of incomeStatementDoc.querySelectorAll("tr")) {
-         const firstCol = row.querySelector("td");
-         if (firstCol?.textContent?.trim() === "EPS (Diluted)") {
-            const cells = row.querySelectorAll("td");
-            epsDiluted = cells[1]?.textContent?.trim() || "";
-            break;
-         }
-      }
-
-      // Fallback for the Financials Overview page, where EPS is now labeled differently.
-      if (!epsDiluted) {
-         for (const row of financialsDoc.querySelectorAll("tr")) {
-            const firstCol = row.querySelector("td")?.textContent?.trim() || "";
-            if (firstCol.includes("Earnings Per Share")) {
-               const cells = row.querySelectorAll("td");
-               epsDiluted = cells[1]?.textContent?.trim() || "";
-               break;
-            }
-         }
-      }
-
-      // Extract EPS next 5Y from Finviz, with the old StockAnalysis label as a fallback
-      let epsGrowth5Y: string | null = finvizEpsGrowth5Y;
-      for (const row of statsDoc.querySelectorAll("tr")) {
-         const label = row.querySelector("td")?.textContent?.trim() || "";
-         if (!epsGrowth5Y && label === "EPS Growth Forecast (5Y)") {
-            epsGrowth5Y = row.querySelectorAll("td")[1]?.textContent?.trim() || null;
-            break;
-         }
-      }
-
-      // If realTimePrice is not available, use afterHoursPrice
-      realTimePrice = realTimePrice || afterHoursPrice;
-
-      // Check if we got meaningful data
-      if (!realTimePrice && peRatios.length === 0 && !epsDiluted) {
-         return Response.json({ error: `No data available for ticker "${ticker}". stockanalysis.com may not support this stock.` }, { status: 404 });
-      }
-
-      // Return all data
-      return Response.json({ ticker, realTimePrice, peRatios, epsDiluted, epsGrowth5Y }, { status: 200 });
-   } catch (err: unknown) {
-      console.error("Error in updateWatchlists:", err);
-      return Response.json({ error: err instanceof Error ? err.message : "Server error!" }, { status: 500 });
+      return Response.json({ stock: saved });
+   } catch (error) {
+      return failure(error);
    }
 }

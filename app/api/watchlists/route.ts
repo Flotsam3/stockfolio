@@ -3,12 +3,55 @@ import StockPortfolio from "@/models/StockPortfolio";
 import { connectDB } from "@/libs/connectDB";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import type { AddStockType } from "@/types/types";
+import { averagePeRatios, readSavedPeRatios } from "@/utils/stockCalculations";
+import { parseStockTicker } from "@/utils/stockTicker";
 
 type MongoWriteError = {
    code?: number;
    name?: string;
    message?: string;
 };
+
+function readWatchlistFields(input: unknown): Record<string, unknown> | null {
+   if (!input || typeof input !== "object" || Array.isArray(input)) return null;
+   const values = input as Record<string, unknown>;
+   const fields: Record<string, unknown> = {};
+
+   for (const key of ["name", "ticker", "isin", "country", "peRatio", "info"]) {
+      if (!Object.hasOwn(values, key)) continue;
+      if (typeof values[key] !== "string") return null;
+      fields[key] = values[key];
+   }
+   if (typeof fields.ticker === "string") {
+      const listing = parseStockTicker(fields.ticker);
+      if (!listing) return null;
+      fields.ticker = listing.ticker;
+   }
+   if (typeof fields.peRatio === "string") {
+      fields.peRatioAverage = averagePeRatios(readSavedPeRatios(fields.peRatio));
+   }
+   if (Object.hasOwn(values, "owned")) {
+      if (typeof values.owned !== "boolean") return null;
+      fields.owned = values.owned;
+   }
+   for (const key of ["rate", "dilutedEps", "growthForecast", "targetPrice"]) {
+      if (!Object.hasOwn(values, key)) continue;
+      const value = values[key];
+      if (value !== null && (typeof value !== "number" || !Number.isFinite(value))) return null;
+      if ((key === "rate" || key === "targetPrice") && typeof value === "number" && value < 0) return null;
+      fields[key] = value;
+   }
+   for (const [key, original] of [["rate", "quoteOriginal"], ["dilutedEps", "epsOriginal"]]) {
+      if (!Object.hasOwn(fields, key)) continue;
+      const amount = fields[key];
+      fields[original] = amount === null ? null : { amount, currency: "USD", asOf: null, source: "manual", fx: null };
+   }
+   if (Object.hasOwn(fields, "growthForecast")) {
+      fields.growthForecastSource = fields.growthForecast === null ? null : "manual";
+   }
+   return fields;
+}
 
 // Helper function to get authenticated user
 async function getAuthenticatedUserId() {
@@ -76,35 +119,24 @@ export async function GET() {
 
 export async function PUT(request: Request) {
    try {
-      await connectDB();
-      const body = await request.json();
-      
       const userId = await getAuthenticatedUserId();
       if (!userId) {
          return Response.json({ error: "Not authenticated" }, { status: 401 });
       }
 
-      const peRatios = body.payload.peRatio
-         .replace(/,/g, ".")
-         .split(";")
-         .map((str: string) => parseFloat(str.trim()))
-         .filter((num: number) => !isNaN(num));
-
-      if (peRatios.length > 0) {
-         const average = (
-            peRatios.reduce((acc: number, curr: number) => acc + curr, 0) / peRatios.length
-         ).toFixed(2);
-         body.payload.peRatioAverage = average;
-      } else {
-         body.payload.peRatioAverage = null;
+      const body = await request.json().catch(() => null);
+      const fields = readWatchlistFields(body?.payload);
+      if (typeof body?.name !== "string" || !fields?.ticker || !fields.name || !fields.country) {
+         return Response.json({ error: "Provide a stock name, valid ticker, and country code." }, { status: 400 });
       }
 
-      // Push into the portfolio that belongs to this user
+      await connectDB();
       const response = await StockPortfolio.findOneAndUpdate(
          { name: body.name, userId },
-         { $push: { watchList: body.payload } },
-         { new: true }
+         { $push: { watchList: fields } },
+         { new: true, runValidators: true },
       );
+      if (!response) return Response.json({ error: "Watchlist not found." }, { status: 404 });
       return Response.json(response, { status: 200 });
    } catch (error) {
       console.log(error);
@@ -114,64 +146,57 @@ export async function PUT(request: Request) {
 
 export async function PATCH(request: Request) {
    try {
-      await connectDB();
-      const body = await request.json();
-
       const userId = await getAuthenticatedUserId();
       if (!userId) {
          return Response.json({ error: "Not authenticated" }, { status: 401 });
       }
 
-      const peRatios = body.payload.peRatio
-         .replace(/,/g, ".")
-         .split(";")
-         .map((str: string) => parseFloat(str.trim()))
-         .filter((num: number) => !isNaN(num));
-
-      if (peRatios.length > 0) {
-         const average = (
-            peRatios.reduce((acc: number, curr: number) => acc + curr, 0) / peRatios.length
-         ).toFixed(2);
-         body.payload.peRatioAverage = average;
-      } else {
-         body.payload.peRatioAverage = null;
+      const body = await request.json().catch(() => null);
+      const stockId = body?.payload?._id;
+      let fields = readWatchlistFields(body?.payload);
+      if (typeof body?.name !== "string" || typeof stockId !== "string" || !/^[a-f\d]{24}$/i.test(stockId) ||
+          !fields || Object.keys(fields).length === 0) {
+         return Response.json({ error: "Provide valid changes for a watchlist stock." }, { status: 400 });
       }
 
-      console.log("payload", body.payload);
-
-      // Build the $set object dynamically to include all fields
-      const updateFields: Record<string, unknown> = {
-         "watchList.$.name": body.payload.name,
-         "watchList.$.ticker": body.payload.ticker,
-         "watchList.$.isin": body.payload.isin,
-         "watchList.$.country": body.payload.country,
-         "watchList.$.rate": body.payload.rate,
-         "watchList.$.dilutedEps": body.payload.dilutedEps,
-         "watchList.$.growthForecast": body.payload.growthForecast,
-         "watchList.$.peRatio": body.payload.peRatio,
-         "watchList.$.peRatioAverage": body.payload.peRatioAverage,
-         "watchList.$.info": body.payload.info ?? "",
-      };
-
-      // Add new fields if they exist in payload
-      if (body.payload.hasOwnProperty('owned')) {
-         updateFields["watchList.$.owned"] = body.payload.owned;
+      await connectDB();
+      const owner = { name: body.name, userId };
+      const entry = { "watchList._id": stockId };
+      let filter: Record<string, unknown> = { ...owner, ...entry };
+      if (fields.ticker) {
+         const portfolio = await StockPortfolio.findOne(filter, { "watchList.$": 1 }).lean() as { watchList?: AddStockType[] } | null;
+         const stock = portfolio?.watchList?.[0];
+         if (!stock) return Response.json({ error: "Watchlist stock not found." }, { status: 404 });
+         filter = { ...owner, watchList: { $elemMatch: { _id: stockId, ticker: stock.ticker, updatedAt: stock.updatedAt ?? null } } };
+         if (fields.ticker !== parseStockTicker(stock.ticker)?.ticker) {
+            fields = {
+               rate: null,
+               quoteOriginal: null,
+               dilutedEps: null,
+               epsOriginal: null,
+               growthForecast: null,
+               growthForecastSource: null,
+               peRatio: "",
+               peRatioAverage: null,
+               analystTarget: null,
+               upside: null,
+               annualDividend: null,
+               dividendYield: null,
+               lastPaidDividend: null,
+               lastDataRefresh: null,
+               refreshIssues: [],
+               ...fields,
+            };
+         }
       }
-      
-      if (body.payload.hasOwnProperty('targetPrice')) {
-         updateFields["watchList.$.targetPrice"] = body.payload.targetPrice;
-      }
-      
-      if (body.payload.lastDataRefresh) {
-         updateFields["watchList.$.lastDataRefresh"] = body.payload.lastDataRefresh;
-      }
 
+      const updateFields = Object.fromEntries(Object.entries(fields).map(([key, value]) => [`watchList.$.${key}`, value]));
       const response = await StockPortfolio.findOneAndUpdate(
-         { name: body.name, userId, "watchList._id": body.payload._id },
+         filter,
          { $set: updateFields },
-         { new: true }
+         { new: true, runValidators: true },
       );
-
+      if (!response) return Response.json({ error: "The watchlist stock could not be updated." }, { status: 409 });
       return Response.json(response, { status: 200 });
    } catch (error) {
       console.log(error);

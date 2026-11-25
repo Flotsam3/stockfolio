@@ -1,42 +1,45 @@
+import type { AmountDetails, AmountInUsd, GrowthForecast, StockRefreshIssue } from "./stockAnalysis";
+
 export type AddStockType = {
    name: string;
    ticker: string;
    isin: string;
    country: string;
-   rate: number;
-   dilutedEps: number;
-   growthForecast: number;
+   rate?: number | null;
+   quoteOriginal?: AmountDetails | null;
+   dilutedEps?: number | null;
+   epsOriginal?: AmountDetails | null;
+   growthForecast?: number | null;
+   growthForecastSource?: GrowthForecast["source"] | "manual" | null;
    peRatio: string;
-   peRatioAverage?: number;
+   peRatioAverage?: number | null;
    anualTargetReturn?: number;
    _id?: string;
    info?: string;
    owned?: boolean;
    targetPrice?: number;
-   lastDataRefresh?: Date;
+   analystTarget?: AmountInUsd | null;
+   upside?: number | null;
+   annualDividend?: AmountInUsd | null;
+   dividendYield?: number | null;
+   lastPaidDividend?: AmountInUsd | null;
+   refreshIssues?: StockRefreshIssue[];
+   lastDataRefresh?: Date | string;
    updatedAt?: string;
    createdAt?: string;
 };
 
 export type StockData = {
    name: string;
-   watchList: [
-      {
-         name: string;
-         ticker: string;
-         isin: string;
-         country: string;
-         rate: number;
-         dilutedEps: number;
-         growthForecast: number;
-         peRatio: string;
-         anualTargetReturn?: number;
-      },
-   ];
+   watchList: AddStockType[];
    anualTargetReturn: number;
    active: boolean;
    _id?: string;
 };
+
+export type WatchlistEdit = Partial<Pick<AddStockType,
+   "name" | "ticker" | "isin" | "country" | "rate" | "dilutedEps" | "growthForecast" | "peRatio" | "info" | "owned" | "targetPrice"
+>> & Pick<AddStockType, "_id">;
 
 export type EconomicEntry = {
    value: number | string;

@@ -27,7 +27,10 @@ export default function DashboardClient() {
 
    return (
       <>
-         <div className="relative flex-1 bg-cover bg-center h-[100vh] bg-[url('/images/feature-bg.png')]">
+         <div className="relative isolate flex-1 h-[100vh]">
+            <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 overflow-hidden bg-main-dark">
+               <div className="absolute -inset-24 bg-cover bg-center bg-[url('/images/feature-bg.png')] blur-[15px]" />
+            </div>
             <section className="absolute top-28 left-5 right-5">
                <div className="flex justify-center items-start gap-5">
                   {/* Left side */}
