@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.2.0](https://github.com/Flotsam3/stockfolio/compare/v1.1.4...v1.2.0) (2026-11-25)
+
+### Features
+
+* **watchlist:** mark required fields in add watchlist panel ([242dea3](https://github.com/Flotsam3/stockfolio/commit/242dea3728c8096e7e994a8c374c4aa83e37c027))
+
 ## [1.1.4](https://github.com/Flotsam3/stockfolio/compare/v1.1.3...v1.1.4) (2026-11-25)
 
 ### Bug Fixes
